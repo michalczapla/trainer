@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <title>Trainer</title>
+</head>
+<body>
+<div class="container">
+    <h1>Witaj w trainerze, <span th:text="${username}"></span></h1>
+    <div class="row">
+        <div class="col-sm">
+            <h3>Lista treningów</h3>
+
+            <div class="card" style="width: 18rem;" th:each="workout: ${workouts}">
+                <div class="card-body">
+                    <h6 class="card-title" th:text="${workout.getName()+' '}"></h6>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(workout.getCreatedAt(),'MM-yyyy')}"></h6>
+                    <div class="row">
+                        <div class="col-sm">
+
+                            <a th:href="@{/(h=${workout.getId()})}" class="btn btn-success btn-sm">Activate</a>
+
+                        </div>
+                        <div class="col-sm">
+                            <form method="get" th:action="@{/workout/edit/{id}(id=${workout.getId()})}">
+                                <input type="submit" class="btn btn-info btn-sm" value="Edit">
+                            </form>
+                        </div>
+                        <div class="col-sm">
+                            <form method="get" th:action="@{/workout/delete/{id}(id=${workout.getId()})}">
+                            <input type="submit" class="btn btn-danger btn-sm" value="Delete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="post" th:action="@{/workout}" th:object="${workout}" id="newworkout">
+                <div class="form-group">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                           type="text" th:field="*{name}" placeholder="Name">
+                    <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Errors</div>
+                </div>
+                <input type="submit" class="btn btn-success btn-block" value="Add workout">
+            </form>
+        </div>
+        <div class="col">
+            <h3>Przebieg ćwiczeń</h3>
+
+            <table class="table table-sm table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Weight [kg]</th>
+                    <th scope="col">Waist [cm]</th>
+                    <th scope="col">Workouts made</th>
+                </tr>
+                </thead>
+                <tr th:each="workoutHistory: ${workoutHistoryList}">
+                    <th scope="row" th:text="${workoutHistory.getDate()}"></th>
+                    <td th:text="${workoutHistory.getWeight()}"></td>
+                    <td th:text="${workoutHistory.getWaist()}"></td>
+                    <td th:text="${workoutHistory.workoutMade}"></td>
+                </tr>
+            </table>
+<!--            <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory">-->
+<!--                <table class="table table-sm">-->
+<!--                    <tr>-->
+<!--                        <td>-->
+<!--                            <div class="form-group">-->
+<!--                            <input class="form-control" th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''"-->
+<!--                                   type="date" th:field="*{date}">-->
+<!--                            <div class="invalid-feedback" th:errors="*{date}" th:if="${#fields.hasErrors('date')}">Errors</div>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <div class="form-group">-->
+<!--                                <input class="form-control" th:classappend="${#fields.hasErrors('weight')} ? 'is-invalid' : ''"-->
+<!--                                       type="number" th:field="*{weight}" step=0.01>-->
+<!--                                <div class="invalid-feedback" th:errors="*{weight}" th:if="${#fields.hasErrors('weight')}">Errors</div>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <div class="form-group">-->
+<!--                                <input class="form-control" th:classappend="${#fields.hasErrors('waist')} ? 'is-invalid' : ''"-->
+<!--                                       type="number" th:field="*{waist}" step=0.01>-->
+<!--                                <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <div class="form-group form-check">-->
+<!--                                <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"-->
+<!--                                       type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">-->
+<!--                                <label class="form-check-label" for="checkbox-workout-made">Workout made</label>-->
+<!--                                <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--                <input type="submit" class="btn btn-success btn-sm" value="Add">-->
+<!--            </form>-->
+        </div>
+    </div>
+</div>
+</body>
+</html>
