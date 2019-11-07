@@ -14,11 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -40,17 +39,16 @@ public class MainController {
     public List<Workout> getWorkoutsModel(@AuthenticationPrincipal User user) {
         return workoutRepository.findAllByUser(user);
     }
-    @ModelAttribute("username")
-    public String getUsernameModel(@AuthenticationPrincipal User user) {
-        return user.getName();
-    }
+
     @ModelAttribute("workout")
     public Workout getWorkout() {
         return new Workout();
     }
     @ModelAttribute("workoutHistory")
     public WorkoutHistory getWorkoutHistory() {
-        return new WorkoutHistory();
+        WorkoutHistory workoutHistory  = new WorkoutHistory();
+        workoutHistory.setDate(LocalDate.now());
+        return workoutHistory;
     }
 
 
@@ -61,6 +59,11 @@ public class MainController {
                 sessionParameters.setAndValidateCurrentWorkout(h.get());
             }
 
+        Map<String, String> names = new HashMap<>();
+        names.put("username",user.getName());
+        names.put("currentWorkout",sessionParameters.getCurrentWorkout(workoutRepository).getName());
+
+        model.addAttribute("names",names);
         model.addAttribute("workoutHistoryList",workoutHistoryRepository.findAllByUserAndWorkoutId(user, sessionParameters.getCurrentWorkout()));
         //model.addAttribute("workoutHistoryList",getWorkoutHistoryListModel(user,new Workout()));
         return "main";
@@ -86,13 +89,14 @@ public class MainController {
             return "main";
         }
         workoutHistory.setUser(user);
-        Optional<Workout> currentWorkout = workoutRepository.findById(sessionParameters.getCurrentWorkout());
-        if (currentWorkout.isPresent()) {
-            workoutHistory.setWorkout(currentWorkout.get());
+        Workout currentWorkout = sessionParameters.getCurrentWorkout(workoutRepository);
+        if (currentWorkout!=null) {
+            workoutHistory.setWorkout(currentWorkout);
         }
         workoutHistoryRepository.save(workoutHistory);
         logger.info(workoutHistory.toString());
         return "redirect:/";
     }
+
 
 }

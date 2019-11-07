@@ -1,5 +1,10 @@
 package com.czaplon.trainer.config;
 
+import com.czaplon.trainer.model.Workout;
+import com.czaplon.trainer.repository.WorkoutRepository;
+
+import java.util.Optional;
+
 public class SessionParameters {
     private Long currentWorkout;
 
@@ -9,6 +14,15 @@ public class SessionParameters {
 
     public Long getCurrentWorkout() {
         return (currentWorkout==null)? 1 : currentWorkout;
+    }
+
+    public Workout getCurrentWorkout(WorkoutRepository workoutRepository) {
+        Optional<Workout> currentWorkout = workoutRepository.findById(getCurrentWorkout());
+        if (currentWorkout.isPresent()) {
+            return currentWorkout.get();
+        } else {
+            return null;
+        }
     }
 
     public void setCurrentWorkout(Long currentWorkout) {
@@ -24,4 +38,6 @@ public class SessionParameters {
         }
         this.currentWorkout=parsedValue;
     }
+
+
 }

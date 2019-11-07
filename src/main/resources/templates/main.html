@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Witaj w trainerze, <span th:text="${username}"></span></h1>
+    <h1>Witaj w trainerze, <span th:text="${names!=null ? names.get('username'): null}"></span></h1>
     <div class="row">
         <div class="col-sm">
             <h3>Lista treningów</h3>
@@ -48,7 +48,7 @@
             </form>
         </div>
         <div class="col">
-            <h3>Przebieg ćwiczeń</h3>
+            <h3>Przebieg ćwiczeń [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
 
             <table class="table table-sm table-hover">
                 <thead>

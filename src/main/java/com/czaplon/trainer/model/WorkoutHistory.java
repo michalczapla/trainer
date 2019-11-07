@@ -1,9 +1,12 @@
 package com.czaplon.trainer.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.sql.Date;
+import java.time.LocalDate;
+
 
 @Entity
 public class WorkoutHistory {
@@ -21,7 +24,8 @@ public class WorkoutHistory {
     private User user;
 
     @NotNull(message = "Cannot be empty")
-    private Date date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
 
     @NotNull(message = "Cannot be empty")
     @Positive(message = "Weight needs to be positive")
@@ -34,7 +38,7 @@ public class WorkoutHistory {
     @NotNull(message = "Cannot be empty")
     private boolean workoutMade;
 
-    public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") Date date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user) {
+    public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") LocalDate date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user) {
         this.workout = workout;
         this.date = date;
         this.weight = weight;
@@ -62,11 +66,11 @@ public class WorkoutHistory {
         this.workout = workout;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
