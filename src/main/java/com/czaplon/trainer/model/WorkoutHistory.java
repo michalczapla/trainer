@@ -14,12 +14,10 @@ public class WorkoutHistory {
 
     @ManyToOne
     @JoinColumn(name="workout_id")
-    @NotNull(message = "Cannot be empty")
     private Workout workout;
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    @NotNull(message = "Cannot be empty")
     private User user;
 
     @NotNull(message = "Cannot be empty")

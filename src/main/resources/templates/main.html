@@ -66,42 +66,42 @@
                     <td th:text="${workoutHistory.workoutMade}"></td>
                 </tr>
             </table>
-<!--            <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory">-->
-<!--                <table class="table table-sm">-->
-<!--                    <tr>-->
-<!--                        <td>-->
-<!--                            <div class="form-group">-->
-<!--                            <input class="form-control" th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''"-->
-<!--                                   type="date" th:field="*{date}">-->
-<!--                            <div class="invalid-feedback" th:errors="*{date}" th:if="${#fields.hasErrors('date')}">Errors</div>-->
-<!--                            </div>-->
-<!--                        </td>-->
-<!--                        <td>-->
-<!--                            <div class="form-group">-->
-<!--                                <input class="form-control" th:classappend="${#fields.hasErrors('weight')} ? 'is-invalid' : ''"-->
-<!--                                       type="number" th:field="*{weight}" step=0.01>-->
-<!--                                <div class="invalid-feedback" th:errors="*{weight}" th:if="${#fields.hasErrors('weight')}">Errors</div>-->
-<!--                            </div>-->
-<!--                        </td>-->
-<!--                        <td>-->
-<!--                            <div class="form-group">-->
-<!--                                <input class="form-control" th:classappend="${#fields.hasErrors('waist')} ? 'is-invalid' : ''"-->
-<!--                                       type="number" th:field="*{waist}" step=0.01>-->
-<!--                                <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>-->
-<!--                            </div>-->
-<!--                        </td>-->
-<!--                        <td>-->
-<!--                            <div class="form-group form-check">-->
-<!--                                <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"-->
-<!--                                       type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">-->
-<!--                                <label class="form-check-label" for="checkbox-workout-made">Workout made</label>-->
-<!--                                <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>-->
-<!--                            </div>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--                <input type="submit" class="btn btn-success btn-sm" value="Add">-->
-<!--            </form>-->
+            <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory">
+                <table class="table table-sm">
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                            <input class="form-control" th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''"
+                                   type="date" th:field="*{date}">
+                            <div class="invalid-feedback" th:errors="*{date}" th:if="${#fields.hasErrors('date')}">Errors</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input class="form-control" th:classappend="${#fields.hasErrors('weight')} ? 'is-invalid' : ''"
+                                       type="number" th:field="*{weight}" step=0.01>
+                                <div class="invalid-feedback" th:errors="*{weight}" th:if="${#fields.hasErrors('weight')}">Errors</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input class="form-control" th:classappend="${#fields.hasErrors('waist')} ? 'is-invalid' : ''"
+                                       type="number" th:field="*{waist}" step=0.01>
+                                <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group form-check">
+                                <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"
+                                       type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">
+                                <label class="form-check-label" for="checkbox-workout-made">Workout made</label>
+                                <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" class="btn btn-success btn-sm" value="Add">
+            </form>
         </div>
     </div>
 </div>

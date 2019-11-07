@@ -44,10 +44,18 @@ public class MainController {
     public String getUsernameModel(@AuthenticationPrincipal User user) {
         return user.getName();
     }
+    @ModelAttribute("workout")
+    public Workout getWorkout() {
+        return new Workout();
+    }
+    @ModelAttribute("workoutHistory")
+    public WorkoutHistory getWorkoutHistory() {
+        return new WorkoutHistory();
+    }
 
 
         @GetMapping({"/"})
-    public String getMain(Workout workout, WorkoutHistory workoutHistory, @AuthenticationPrincipal User user, Model model, @RequestParam Optional<String> h) {
+    public String getMain( @AuthenticationPrincipal User user, Model model, @RequestParam Optional<String> h) {
 
             if (h.isPresent()) {
                 sessionParameters.setAndValidateCurrentWorkout(h.get());
@@ -70,21 +78,21 @@ public class MainController {
         return "redirect:/";
     }
 
-//    @PostMapping("/workouthistory")
-//    public String addWorkoutHistory(@Valid @ModelAttribute("newworkouthistory") WorkoutHistory workoutHistory, BindingResult result, @AuthenticationPrincipal User user){
-//        logger.info(workoutHistory.toString());
-//        if (result.hasErrors()) {
-//            logger.info("no errors mapping workouthistory");
-//            return "main";
-//        }
-//        workoutHistory.setUser(user);
-//        Optional<Workout> currentWorkout = workoutRepository.findById(sessionParameters.getCurrentWorkout());
-//        if (currentWorkout.isPresent()) {
-//            workoutHistory.setWorkout(currentWorkout.get());
-//        }
-//        workoutHistoryRepository.save(workoutHistory);
-//        logger.info(workoutHistory.toString());
-//        return "redirect:/";
-//    }
+    @PostMapping("/workouthistory")
+    public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @AuthenticationPrincipal User user){
+        logger.info(workoutHistory.toString());
+        if (result.hasErrors()) {
+            logger.info("errors mapping workouthistory :(");
+            return "main";
+        }
+        workoutHistory.setUser(user);
+        Optional<Workout> currentWorkout = workoutRepository.findById(sessionParameters.getCurrentWorkout());
+        if (currentWorkout.isPresent()) {
+            workoutHistory.setWorkout(currentWorkout.get());
+        }
+        workoutHistoryRepository.save(workoutHistory);
+        logger.info(workoutHistory.toString());
+        return "redirect:/";
+    }
 
 }
