@@ -10,12 +10,12 @@
 </head>
 <body>
 <div class="container">
-    <h1>Witaj w trainerze, <span th:text="${names!=null ? names.get('username'): null}"></span></h1>
+    <h1 class="display-4">Witaj w trainerze, <span th:text="${names!=null ? names.get('username'): null}"></span></h1>
     <div class="row">
-        <div class="col-sm">
+        <div class="col-4">
             <h3>Lista treningów</h3>
 
-            <div class="card" style="width: 18rem;" th:each="workout: ${workouts}">
+            <div class="card" th:each="workout: ${workouts}">
                 <div class="card-body">
                     <h6 class="card-title" th:text="${workout.getName()+' '}"></h6>
                     <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(workout.getCreatedAt(),'MM-yyyy')}"></h6>
@@ -53,10 +53,11 @@
             <table class="table table-sm table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Weight [kg]</th>
-                    <th scope="col">Waist [cm]</th>
-                    <th scope="col">Workouts made</th>
+                    <th scope="col" style="width: 25%">Date</th>
+                    <th scope="col" style="width: 15%">Weight [kg]</th>
+                    <th scope="col" style="width: 15%">Waist [cm]</th>
+                    <th scope="col" style="width: 15%">Workouts made</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tr th:each="workoutHistory: ${workoutHistoryList}">
@@ -64,10 +65,14 @@
                     <td th:text="${workoutHistory.getWeight()}"></td>
                     <td th:text="${workoutHistory.getWaist()}"></td>
                     <td th:text="${workoutHistory.workoutMade}"></td>
+                    <td>
+                        <a th:href="@{/workouthistory/edit/(h=${workoutHistory.getId()})}" class="btn btn-success btn-sm">Edit</a>
+                        <a th:href="@{/workouthistory/delete/(h=${workoutHistory.getId()})}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
                 </tr>
-            </table>
+<!--            </table>-->
             <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory">
-                <table class="table table-sm">
+<!--                <table class="table table-sm">-->
                     <tr>
                         <td>
                             <div class="form-group">
@@ -90,7 +95,7 @@
                                 <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>
                             </div>
                         </td>
-                        <td>
+                        <td th:colspan="2">
                             <div class="form-group form-check">
                                 <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"
                                        type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">
@@ -102,8 +107,33 @@
                 </table>
                 <input type="submit" class="btn btn-success btn-sm" value="Add">
             </form>
+
+            <div class="jumbotron">
+                <p class="lead">Statistics</p>
+                <hr class="my-4">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Duration in days
+                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('duration')}"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Weight loss [kg]
+                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('weightLoss')}"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Waist loss [cm]
+                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('waistLoss')}">1</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Number of workouts
+                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('workoutCount')}">1</span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
+
 </div>
 </body>
 </html>

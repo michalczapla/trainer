@@ -14,8 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -27,6 +29,7 @@ public class MainController {
     private WorkoutRepository workoutRepository;
     private WorkoutHistoryRepository workoutHistoryRepository;
     private SessionParameters sessionParameters;
+
 
     @Autowired
     public MainController(WorkoutRepository workoutRepository, WorkoutHistoryRepository workoutHistoryRepository,SessionParameters sessionParameters) {
@@ -63,30 +66,37 @@ public class MainController {
         names.put("username",user.getName());
         names.put("currentWorkout",sessionParameters.getCurrentWorkout(workoutRepository).getName());
 
+        Map<String, String> statistics = generateStatistics(sessionParameters.getCurrentWorkout(),user);
+
         model.addAttribute("names",names);
-        model.addAttribute("workoutHistoryList",workoutHistoryRepository.findAllByUserAndWorkoutId(user, sessionParameters.getCurrentWorkout()));
-        //model.addAttribute("workoutHistoryList",getWorkoutHistoryListModel(user,new Workout()));
+        model.addAttribute("workoutHistoryList",workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
+        model.addAttribute("statistics",statistics);
         return "main";
     }
 
     @PostMapping("/workout")
-    public String addWorkout(@Valid Workout workout, BindingResult result, @AuthenticationPrincipal User user) {
+    public String addWorkout(@Valid Workout workout, BindingResult result, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes) {
         logger.info(workout.toString());
         if (result.hasErrors()) {
-            return "main";
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workout",result);
+            redirectAttributes.addFlashAttribute("workout",workout);
+            return "redirect:/";
         }
         workout.setUser(user);
         workoutRepository.save(workout);
+        sessionParameters.setAndValidateCurrentWorkout(workout.getId().toString());
         logger.info(workout.toString());
         return "redirect:/";
     }
 
     @PostMapping("/workouthistory")
-    public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @AuthenticationPrincipal User user){
+    public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes){
         logger.info(workoutHistory.toString());
         if (result.hasErrors()) {
             logger.info("errors mapping workouthistory :(");
-            return "main";
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workoutHistory",result);
+            redirectAttributes.addFlashAttribute("workoutHistory",workoutHistory);
+            return "redirect:/";
         }
         workoutHistory.setUser(user);
         Workout currentWorkout = sessionParameters.getCurrentWorkout(workoutRepository);
@@ -96,6 +106,23 @@ public class MainController {
         workoutHistoryRepository.save(workoutHistory);
         logger.info(workoutHistory.toString());
         return "redirect:/";
+    }
+
+    private Map<String, String> generateStatistics(Long workoutId, User user) {
+        Map<String,String> statistics = new HashMap<>();
+        // duration
+        Optional<WorkoutHistory> firstWorkout = workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateAsc(workoutId,user);
+        Optional<WorkoutHistory> lastWorkout = workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateDesc(workoutId,user);
+        Integer workoutCount = workoutHistoryRepository.findAllByWorkoutIdAndUserAndWorkoutMade(workoutId,user,true).size();
+        if (firstWorkout.isPresent()) {
+            statistics.put("duration", String.valueOf(Duration.between(firstWorkout.get().getDate().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()));
+        }
+        if (firstWorkout.isPresent() && lastWorkout.isPresent()) {
+            statistics.put("weightLoss", String.valueOf(firstWorkout.get().getWeight()-lastWorkout.get().getWeight()));
+            statistics.put("waistLoss", String.valueOf(firstWorkout.get().getWaist()-lastWorkout.get().getWaist()));
+        }
+        statistics.put("workoutCount",String.valueOf(workoutCount));
+        return statistics;
     }
 
 

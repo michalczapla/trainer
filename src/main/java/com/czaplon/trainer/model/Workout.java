@@ -68,7 +68,7 @@ public class Workout {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", createdAt=" + createdAt +
-                ", user=" + user +
+                ", user=" + ((user!=null) ? user.getId() : null)+
                 '}';
     }
 }

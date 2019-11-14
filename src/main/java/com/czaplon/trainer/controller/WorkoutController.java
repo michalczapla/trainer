@@ -33,6 +33,7 @@ public class WorkoutController {
     @GetMapping("/delete/{id}")
     public String deleteWorkoutConfirmation(@PathVariable String id, Model model) {
         Long idLong = convertStringToLong(id);
+        if (idLong==null) return "redirect:/";
 
         Optional<Workout> workout = workoutRepository.findById(idLong);
         if (idLong!=null && workout.isPresent()) {
@@ -47,6 +48,7 @@ public class WorkoutController {
     @PostMapping("/delete/{id}")
     public String deleteWorkout(@PathVariable String id) {
         Long idLong = convertStringToLong(id);
+        if (idLong==null) return "redirect:/";
 
         if (idLong!=null) {
             workoutRepository.deleteById(idLong);
@@ -56,10 +58,12 @@ public class WorkoutController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editWorkoutForm(@PathVariable String id, Model model){
+    public String editWorkoutForm(@PathVariable String id, Model model,@AuthenticationPrincipal User user){
         Long idLong = convertStringToLong(id);
 
-        Optional<Workout> workout = workoutRepository.findById(idLong);
+        if (idLong==null) return "redirect:/";
+
+        Optional<Workout> workout = workoutRepository.findByIdAndUser(idLong,user);
         if (idLong!=null && workout.isPresent()) {
             model.addAttribute("workoutToEditName", workout.get().getName());
             if (!model.containsAttribute("workoutToEdit"))
@@ -79,6 +83,7 @@ public class WorkoutController {
         }
 
         Long idLong = convertStringToLong(id);
+        if (idLong==null) return "redirect:/";
         Optional<Workout> workout = workoutRepository.findById(idLong);
         if (idLong!=null && workout.isPresent()) {
             workout.get().setName(workoutToEdit.getName());
@@ -89,7 +94,8 @@ public class WorkoutController {
 
 
 
-    private Long convertStringToLong(String id) {
+    public static Long convertStringToLong(String id) {
+        if (id==null) return null;
         Long idLong = null;
         try {
             idLong = Long.parseLong(id);
