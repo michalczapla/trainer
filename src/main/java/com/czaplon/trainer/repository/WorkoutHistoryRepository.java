@@ -17,8 +17,13 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory,L
     Optional<WorkoutHistory> findByIdAndUser(Long id,User user);
 
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateDesc(Long workoutId, User user);
+    Optional<WorkoutHistory> findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateDesc(Long workoutId, User user);
+
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateAsc(Long workoutId, User user);
+    Optional<WorkoutHistory> findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateAsc(Long workoutId, User user);
+
     List<WorkoutHistory> findAllByWorkoutIdAndUserAndWorkoutMade(Long workoutId,User user,Boolean workoutMade);
+
 
     void deleteWorkoutHistoryByIdAndUser(Long workoutHistoryId, User user);
 }

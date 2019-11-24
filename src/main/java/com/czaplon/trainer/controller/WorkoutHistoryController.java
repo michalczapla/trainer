@@ -3,6 +3,11 @@ package com.czaplon.trainer.controller;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
+import com.czaplon.trainer.service.storage.StorageException;
+import com.czaplon.trainer.service.storage.StorageFileNotFoundException;
+import com.czaplon.trainer.service.storage.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -10,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +29,10 @@ public class WorkoutHistoryController {
     @Autowired
     private WorkoutHistoryRepository workoutHistoryRepository;
 
+    @Autowired
+    private StorageService storageService;
+
+    private Logger logger = LoggerFactory.getLogger(WorkoutHistoryController.class);
 
     @GetMapping("/edit")
     public String getEditWorkoutHistoryForm(Model model, @RequestParam Optional<String> h, @AuthenticationPrincipal User user) {
@@ -42,13 +53,28 @@ public class WorkoutHistoryController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @PathVariable String id, RedirectAttributes redirectAttributes,@AuthenticationPrincipal User user) {
+    public String editWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @RequestParam MultipartFile imageFile, @PathVariable String id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user) {
+        boolean errors=false;
+        //        checking image
+        if (!imageFile.isEmpty()) {
+            try {
+                if (workoutHistory.getImage()!=null) storageService.delete(workoutHistory.getImage());
+                workoutHistory.setImage(storageService.store(imageFile));
+            } catch (IOException | StorageException | StorageFileNotFoundException e) {
+                redirectAttributes.addFlashAttribute("imageError", e.getMessage());
+                errors = true;
+            }
+        }
+
+        logger.info("EDIT: "+ workoutHistory.toString());
+
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workoutHistory",result);
             redirectAttributes.addFlashAttribute("workoutHistory",workoutHistory);
-            return "redirect:/workouthistory/edit?h="+id;
+            errors=true;
         }
 
+        if (errors) return "redirect:/workouthistory/edit?h="+id;
         workoutHistoryRepository.save(workoutHistory);
         return "redirect:/";
     }
@@ -75,7 +101,12 @@ public class WorkoutHistoryController {
         if (!h.isPresent() || idLong==null) {
             return "redirect:/";
         }
+        Optional<WorkoutHistory> workoutToDelete = workoutHistoryRepository.findByIdAndUser(idLong,user);
+        if (workoutToDelete.isPresent() && workoutToDelete.get().getImage()!=null) {
+            storageService.markArchive(workoutToDelete.get().getImage());
+        }
         workoutHistoryRepository.deleteWorkoutHistoryByIdAndUser(idLong,user);
+
         return "redirect:/";
     }
 

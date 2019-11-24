@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -53,25 +54,28 @@
             <table class="table table-sm table-hover">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 25%">Date</th>
+                    <th scope="col" style="width: 20%">Date</th>
                     <th scope="col" style="width: 15%">Weight [kg]</th>
                     <th scope="col" style="width: 15%">Waist [cm]</th>
-                    <th scope="col" style="width: 15%">Workouts made</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col" style="width: 20%">Events</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tr th:each="workoutHistory: ${workoutHistoryList}">
                     <th scope="row" th:text="${workoutHistory.getDate()}"></th>
                     <td th:text="${workoutHistory.getWeight()}"></td>
                     <td th:text="${workoutHistory.getWaist()}"></td>
-                    <td th:text="${workoutHistory.workoutMade}"></td>
+                    <td>
+                        <i th:if="${workoutHistory.workoutMade}" class="material-icons" title="Workout done">accessibility_new</i>
+                        <i th:if="${workoutHistory.image!=null}" class="material-icons" title="Image uploaded">photo_camera</i>
+                    </td>
                     <td>
                         <a th:href="@{/workouthistory/edit/(h=${workoutHistory.getId()})}" class="btn btn-success btn-sm">Edit</a>
                         <a th:href="@{/workouthistory/delete/(h=${workoutHistory.getId()})}" class="btn btn-danger btn-sm">Delete</a>
                     </td>
                 </tr>
 <!--            </table>-->
-            <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory">
+            <form method="post" th:action="@{/workouthistory}" th:object="${workoutHistory}" id="newworkouthistory" enctype="multipart/form-data">
 <!--                <table class="table table-sm">-->
                     <tr>
                         <td>
@@ -95,19 +99,27 @@
                                 <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>
                             </div>
                         </td>
-                        <td th:colspan="2">
+                        <td>
                             <div class="form-group form-check">
                                 <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"
                                        type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">
-                                <label class="form-check-label" for="checkbox-workout-made">Workout made</label>
+                                <label class="form-check-label" for="checkbox-workout-made"><i class="material-icons" title="Workout done">accessibility_new</i></label>
                                 <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
                             </div>
+
+                            <div class="form-group">
+                                <input class="form-control-file" th:classappend="${imageError} ? 'is-invalid' : ''"
+                                       type="file" id="checkbox-image" name="imageFile">
+                                <div class="invalid-feedback" th:text="${imageError}" th:if="${imageError}">Errors</div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-success btn-sm btn-block" value="Add">
                         </td>
                     </tr>
-                </table>
-                <input type="submit" class="btn btn-success btn-sm" value="Add">
-            </form>
 
+            </form>
+            </table>
             <div class="jumbotron">
                 <p class="lead">Statistics</p>
                 <hr class="my-4">
@@ -129,6 +141,28 @@
                         <span class="badge badge-primary badge-pill" th:text="${statistics.get('workoutCount')}">1</span>
                     </li>
                 </ul>
+
+                <div th:if="${statistics.get('firstImg')!=null and statistics.get('lastImg')!=null}">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <img th:src="${'/imgs/'+statistics.get('firstImg')}" class="card-img-top" alt="Workout beggining">
+                                <div class="card-body">
+                                    <p class="card-text" th:text="${statistics.get('firstImgDate')}"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <img th:src="${'/imgs/'+statistics.get('lastImg')}" class="card-img-top" alt="Workout beggining">
+                                <div class="card-body">
+                                    <p class="card-text" th:text="${statistics.get('lastImgDate')}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

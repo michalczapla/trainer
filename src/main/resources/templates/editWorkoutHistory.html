@@ -12,7 +12,7 @@
 <div class="container">
     <h1>You are editing workout @ <span th:text="${workoutHisotryToEditName}">dataToEdit</span>.</h1>
 
-    <form method="post" th:action="@{/workouthistory/edit/{id}(id=${workoutHistory.getId()})}" id="editForm" th:object="${workoutHistory}">
+    <form method="post" th:action="@{/workouthistory/edit/{id}(id=${workoutHistory.getId()})}" id="editForm" th:object="${workoutHistory}" enctype="multipart/form-data">
         <div class="form-group">
             <input class="form-control" th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''"
                    type="date" th:field="*{date}">
@@ -33,6 +33,16 @@
                    type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">
             <label class="form-check-label" for="checkbox-workout-made">Workout made</label>
             <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
+        </div>
+        <div th:if="${workoutHistory.getImage()!=null}">
+            <img th:src="${'/imgs/' + workoutHistory.getImage()}" style="width: 500px;"/>
+            <input  type="hidden" th:name="image" th:id="image" th:value="${workoutHistory.getImage()}"/>
+        </div>
+
+        <div class="form-group">
+            <input class="form-control-file" th:classappend="${imageError} ? 'is-invalid' : ''"
+                   type="file" id="checkbox-image" name="imageFile">
+            <div class="invalid-feedback" th:text="${imageError}" th:if="${imageError}">Errors</div>
         </div>
 
         <input  type="hidden" th:field="*{user}"/>

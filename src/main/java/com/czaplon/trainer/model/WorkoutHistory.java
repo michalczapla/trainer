@@ -24,7 +24,7 @@ public class WorkoutHistory {
     private User user;
 
     @NotNull(message = "Cannot be empty")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd") //yyyy-MM-dd
     private LocalDate date;
 
     @NotNull(message = "Cannot be empty")
@@ -37,6 +37,16 @@ public class WorkoutHistory {
 
     @NotNull(message = "Cannot be empty")
     private boolean workoutMade;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    private String image;
 
     public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") LocalDate date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user) {
         this.workout = workout;
@@ -116,6 +126,7 @@ public class WorkoutHistory {
                 ", weight=" + weight +
                 ", waist=" + waist +
                 ", workoutMade=" + workoutMade +
+                ", image=" + image +
                 '}';
     }
 }

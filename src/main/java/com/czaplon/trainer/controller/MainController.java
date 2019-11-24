@@ -6,6 +6,9 @@ import com.czaplon.trainer.model.Workout;
 import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
 import com.czaplon.trainer.repository.WorkoutRepository;
+import com.czaplon.trainer.service.storage.StorageException;
+import com.czaplon.trainer.service.storage.StorageFileNotFoundException;
+import com.czaplon.trainer.service.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -29,13 +34,15 @@ public class MainController {
     private WorkoutRepository workoutRepository;
     private WorkoutHistoryRepository workoutHistoryRepository;
     private SessionParameters sessionParameters;
+    private StorageService storageService;
 
 
     @Autowired
-    public MainController(WorkoutRepository workoutRepository, WorkoutHistoryRepository workoutHistoryRepository,SessionParameters sessionParameters) {
+    public MainController(WorkoutRepository workoutRepository, WorkoutHistoryRepository workoutHistoryRepository,SessionParameters sessionParameters,StorageService storageService) {
         this.workoutRepository = workoutRepository;
         this.workoutHistoryRepository = workoutHistoryRepository;
         this.sessionParameters=sessionParameters;
+        this.storageService=storageService;
     }
 
     @ModelAttribute("workouts")
@@ -59,7 +66,10 @@ public class MainController {
     public String getMain( @AuthenticationPrincipal User user, Model model, @RequestParam Optional<String> h) {
 
             if (h.isPresent()) {
-                sessionParameters.setAndValidateCurrentWorkout(h.get());
+                Long idLong = WorkoutController.convertStringToLong(h.get());
+                if (idLong!=null && workoutRepository.findByIdAndUser(idLong,user).isPresent()) {
+                    sessionParameters.setAndValidateCurrentWorkout(h.get());
+                }
             }
 
         Map<String, String> names = new HashMap<>();
@@ -90,8 +100,21 @@ public class MainController {
     }
 
     @PostMapping("/workouthistory")
-    public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes){
+    public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @RequestParam MultipartFile imageFile, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes){
         logger.info(workoutHistory.toString());
+        logger.info(imageFile.getContentType());
+//        checking image
+        if (!imageFile.isEmpty()) {
+            try {
+                workoutHistory.setImage(storageService.store(imageFile));
+            } catch (IOException | StorageException | StorageFileNotFoundException e) {
+                redirectAttributes.addFlashAttribute("imageError", e.getMessage());
+                logger.warn(e.getMessage());
+//                return "redirect:/";
+            }
+        }
+
+//        checking Form validity
         if (result.hasErrors()) {
             logger.info("errors mapping workouthistory :(");
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workoutHistory",result);
@@ -122,6 +145,22 @@ public class MainController {
             statistics.put("waistLoss", String.valueOf(firstWorkout.get().getWaist()-lastWorkout.get().getWaist()));
         }
         statistics.put("workoutCount",String.valueOf(workoutCount));
+
+//        historia z obrazkami
+        Optional<WorkoutHistory> firstWorkoutImg = workoutHistoryRepository.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateAsc(workoutId,user);
+        Optional<WorkoutHistory> lastWorkoutImg = workoutHistoryRepository.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateDesc(workoutId,user);
+
+        if (workoutHistoryRepository.count()>1 &&
+                firstWorkoutImg.isPresent() &&
+                lastWorkoutImg.isPresent() &&
+                firstWorkoutImg.get().getId()!=lastWorkoutImg.get().getId()) {
+            statistics.put("firstImg",firstWorkoutImg.get().getImage());
+            statistics.put("lastImg",lastWorkoutImg.get().getImage());
+            statistics.put("firstImgDate",firstWorkoutImg.get().getDate().toString());
+            statistics.put("lastImgDate",lastWorkoutImg.get().getDate().toString());
+        }
+
+//        logger.info(statistics.toString());
         return statistics;
     }
 

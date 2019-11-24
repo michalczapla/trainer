@@ -20,4 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
     public SessionParameters getSessionParameters() {
         return new SessionParameters();
     }
+
+    @Bean
+    public StorageProperties getStorageProperties() { return new StorageProperties();}
 }
