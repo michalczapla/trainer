@@ -11,10 +11,10 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="display-4">Witaj w trainerze, <span th:text="${names!=null ? names.get('username'): null}"></span></h1>
+    <h1 class="display-4">Hello, <span th:text="${names!=null ? names.get('username'): null}"></span></h1>
     <div class="row">
         <div class="col-4">
-            <h3>Lista treningów</h3>
+            <h3>Workout groups</h3>
 
             <div class="card" th:each="workout: ${workouts}">
                 <div class="card-body">
@@ -49,7 +49,7 @@
             </form>
         </div>
         <div class="col">
-            <h3>Przebieg ćwiczeń [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
+            <h3>Workout history [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
 
             <table class="table table-sm table-hover">
                 <thead>
@@ -146,7 +146,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="card">
-                                <img th:src="${'/imgs/'+statistics.get('firstImg')}" class="card-img-top" alt="Workout beggining">
+                                <img th:src="${imagesPath +statistics.get('firstImg')}" class="card-img-top" alt="Workout beggining">
                                 <div class="card-body">
                                     <p class="card-text" th:text="${statistics.get('firstImgDate')}"></p>
                                 </div>
@@ -154,7 +154,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="card">
-                                <img th:src="${'/imgs/'+statistics.get('lastImg')}" class="card-img-top" alt="Workout beggining">
+                                <img th:src="${imagesPath +statistics.get('lastImg')}" class="card-img-top" alt="Workout beggining">
                                 <div class="card-body">
                                     <p class="card-text" th:text="${statistics.get('lastImgDate')}"></p>
                                 </div>

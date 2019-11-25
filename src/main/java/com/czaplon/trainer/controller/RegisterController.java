@@ -24,10 +24,14 @@ public class RegisterController {
 
     private Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public RegisterController(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     @GetMapping
     public String getRegisterForm(RegistrationForm registrationForm) {

@@ -26,13 +26,15 @@ import java.util.Optional;
 @RequestMapping("/workouthistory")
 public class WorkoutHistoryController {
 
-    @Autowired
+    private Logger logger = LoggerFactory.getLogger(WorkoutHistoryController.class);
     private WorkoutHistoryRepository workoutHistoryRepository;
-
-    @Autowired
     private StorageService storageService;
 
-    private Logger logger = LoggerFactory.getLogger(WorkoutHistoryController.class);
+    @Autowired
+    public WorkoutHistoryController(WorkoutHistoryRepository workoutHistoryRepository, StorageService storageService) {
+        this.workoutHistoryRepository = workoutHistoryRepository;
+        this.storageService = storageService;
+    }
 
     @GetMapping("/edit")
     public String getEditWorkoutHistoryForm(Model model, @RequestParam Optional<String> h, @AuthenticationPrincipal User user) {
@@ -40,11 +42,12 @@ public class WorkoutHistoryController {
         if (IdLong==null) return "redirect:/";
 
         Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByIdAndUser(IdLong,user);
-        model.addAttribute("workoutHisotryToEditName", workoutHistory.get().getDate());
+
         if (workoutHistory.isPresent()) {
+            model.addAttribute("workoutHisotryToEditName", workoutHistory.get().getDate());
+
             if (!model.containsAttribute("workoutHistory")) {
                 model.addAttribute("workoutHistory", workoutHistory.get());
-
             }
         } else {
             return "redirect:/";

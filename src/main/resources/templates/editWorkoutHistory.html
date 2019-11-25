@@ -35,7 +35,7 @@
             <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
         </div>
         <div th:if="${workoutHistory.getImage()!=null}">
-            <img th:src="${'/imgs/' + workoutHistory.getImage()}" style="width: 500px;"/>
+            <img th:src="${imagesPath + workoutHistory.getImage()}" style="width: 500px;"/>
             <input  type="hidden" th:name="image" th:id="image" th:value="${workoutHistory.getImage()}"/>
         </div>
 

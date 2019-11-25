@@ -26,9 +26,12 @@ public class WorkoutController {
 
     private Logger logger = LoggerFactory.getLogger(WorkoutController.class);
 
-    @Autowired
     private WorkoutRepository workoutRepository;
 
+    @Autowired
+    public WorkoutController(WorkoutRepository workoutRepository) {
+        this.workoutRepository = workoutRepository;
+    }
 
     @GetMapping("/delete/{id}")
     public String deleteWorkoutConfirmation(@PathVariable String id, Model model) {
