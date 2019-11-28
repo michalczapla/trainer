@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+<section th:fragment="header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
+    <a class="navbar-brand" href="#">trainer</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div th:if="${loggedUser}" class="collapse navbar-collapse" id="navbarMain">
+
+        <div class="navbar-nav ml-auto">
+            <div class="d-flex align-items-center">
+                <i class="material-icons text-white px-1">account_circle</i>
+                <div class="navbar-text text-white">
+                   <span th:text="${loggedUser.get('name')}"/>
+                </div>
+            </div>
+            <a class="nav-item nav-link ml-2" href="/logout">logout</a>
+        </div>
+    </div>
+</nav>
+</section>
+</body>

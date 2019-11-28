@@ -79,7 +79,6 @@ public class MainController {
             }
 
         Map<String, String> names = new HashMap<>();
-        names.put("username",user.getName());
         names.put("currentWorkout",sessionParameters.getCurrentWorkout(workoutRepository).getName());
 
         Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(),user);
