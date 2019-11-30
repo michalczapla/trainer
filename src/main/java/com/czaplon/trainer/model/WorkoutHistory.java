@@ -1,5 +1,8 @@
 package com.czaplon.trainer.model;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,6 +19,7 @@ public class WorkoutHistory {
     private Long id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="workout_id")
     private Workout workout;
 

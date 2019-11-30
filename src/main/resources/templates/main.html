@@ -47,7 +47,7 @@
 
 </div>
 
-        <div class="col">
+        <div class="col" th:if="${names}">
             <h3>Workout history [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
 
             <table class="table table-sm table-hover">
@@ -119,7 +119,7 @@
 
             </form>
             </table>
-            <div class="jumbotron">
+            <div class="jumbotron" th:if="${workoutHistoryList.size()>0}">
                 <p class="lead">Statistics</p>
                 <hr class="my-4">
                 <ul class="list-group">

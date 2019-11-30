@@ -1,5 +1,6 @@
 package com.czaplon.trainer.controller;
 
+import com.czaplon.trainer.config.SessionParameters;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.Workout;
 import com.czaplon.trainer.model.WorkoutHistory;
@@ -28,9 +29,12 @@ public class WorkoutController {
 
     private WorkoutRepository workoutRepository;
 
+    private SessionParameters sessionParameters;
+
     @Autowired
-    public WorkoutController(WorkoutRepository workoutRepository) {
+    public WorkoutController(WorkoutRepository workoutRepository, SessionParameters sessionParameters) {
         this.workoutRepository = workoutRepository;
+        this.sessionParameters=sessionParameters;
     }
 
     @GetMapping("/delete/{id}")
@@ -49,12 +53,13 @@ public class WorkoutController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteWorkout(@PathVariable String id) {
+    public String deleteWorkout(@PathVariable String id, @AuthenticationPrincipal User user) {
         Long idLong = convertStringToLong(id);
         if (idLong==null) return "redirect:/";
 
         if (idLong!=null) {
             workoutRepository.deleteById(idLong);
+            sessionParameters.setLastWorkout(workoutRepository, user);
         }
 
         return "redirect:/";

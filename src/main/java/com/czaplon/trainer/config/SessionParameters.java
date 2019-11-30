@@ -1,7 +1,9 @@
 package com.czaplon.trainer.config;
 
+import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.Workout;
 import com.czaplon.trainer.repository.WorkoutRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.Optional;
 
@@ -22,6 +24,13 @@ public class SessionParameters {
             return currentWorkout.get();
         } else {
             return null;
+        }
+    }
+
+    public void setLastWorkout(WorkoutRepository workoutRepository,User user) {
+        Optional<Workout> workout = workoutRepository.getFirstByUserOrderByIdDesc(user);
+        if (workout.isPresent()) {
+            currentWorkout = workout.get().getId();
         }
     }
 

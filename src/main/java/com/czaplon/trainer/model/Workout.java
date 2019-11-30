@@ -1,9 +1,14 @@
 package com.czaplon.trainer.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+
+import static org.hibernate.annotations.CascadeType.DETACH;
+
 
 @Entity
 public class Workout {

@@ -77,15 +77,16 @@ public class MainController {
                     sessionParameters.setAndValidateCurrentWorkout(h.get());
                 }
             }
+        if (workoutRepository.count()>0) {
+            Map<String, String> names = new HashMap<>();
+            names.put("currentWorkout", sessionParameters.getCurrentWorkout(workoutRepository).getName());
 
-        Map<String, String> names = new HashMap<>();
-        names.put("currentWorkout",sessionParameters.getCurrentWorkout(workoutRepository).getName());
+            Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(), user);
 
-        Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(),user);
-
-        model.addAttribute("names",names);
-        model.addAttribute("workoutHistoryList",workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
-        model.addAttribute("statistics",statistics);
+            model.addAttribute("names", names);
+            model.addAttribute("workoutHistoryList", workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
+            model.addAttribute("statistics", statistics);
+        }
         return "main";
     }
 

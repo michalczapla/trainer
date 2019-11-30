@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface WorkoutRepository extends JpaRepository<Workout,Long> {
     List<Workout> findAllByUser(User user);
     Optional<Workout> findByIdAndUser(Long id, User user);
-
+    Optional<Workout> getFirstByUserOrderByIdDesc(User user);
 }
