@@ -5,8 +5,8 @@
 </head>
 <body>
 <section th:fragment="header">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
-    <a class="navbar-brand" href="#">trainer</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-light border-bottom border-secondary" >
+    <a class="navbar-brand text-dark" href="#">trainer</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,12 +14,12 @@
 
         <div class="navbar-nav ml-auto">
             <div class="d-flex align-items-center">
-                <i class="material-icons text-white px-1">account_circle</i>
-                <div class="navbar-text text-white">
+                <i class="material-icons text-dark px-1">account_circle</i>
+                <div class="navbar-text text-dark">
                    <span th:text="${loggedUser.get('name')}"/>
                 </div>
             </div>
-            <a class="nav-item nav-link ml-2" href="/logout">logout</a>
+            <a class="nav-item nav-link ml-2 text-secondary" href="/logout">logout</a>
         </div>
     </div>
 </nav>

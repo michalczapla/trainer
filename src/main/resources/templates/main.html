@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -14,40 +15,38 @@
 <div class="container">
     <div class="row">
         <div class="col-4">
-            <h3>Workout groups</h3>
+            <h1 class="display-4">Workout groups</h1>
 
-            <div class="card" th:each="workout: ${workouts}">
-                <div class="card-body">
-                    <h6 class="card-title" th:text="${workout.getName()+' '}"></h6>
-                    <h6 class="card-subtitle mb-2 text-muted" th:text="${#dates.format(workout.getCreatedAt(),'MM-yyyy')}"></h6>
-                    <div class="row">
-                        <div class="col-sm">
+            <table class="table table-sm">
+                <tr th:each="workout: ${workouts}">
+                    <td><span class="font-weight-bold" th:text="${workout.getName()}">Title</span></td>
+                    <td><span class="badge badge-light" th:text="${#dates.format(workout.getCreatedAt(),'MM-yyyy')}"></span></td>
+                    <td class="d-flex justify-content-center align-content-between">
+                        <a th:href="@{/(h=${workout.getId()})}" class="btn btn-outline-info btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">done</i></a>
+                        <a th:href="@{/workout/edit/{id}(id=${workout.getId()})}" class="btn btn-outline-secondary btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">build</i></a>
+                        <a th:href="@{/workout/delete/{id}(id=${workout.getId()})}" class="btn btn-outline-secondary btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">close</i></a>
+                    </td>
+                </tr>
+            </table>
 
-                            <a th:href="@{/(h=${workout.getId()})}" class="btn btn-success btn-sm">Activate</a>
-
-                        </div>
-                        <div class="col-sm">
-                            <form method="get" th:action="@{/workout/edit/{id}(id=${workout.getId()})}">
-                                <input type="submit" class="btn btn-info btn-sm" value="Edit">
-                            </form>
-                        </div>
-                        <div class="col-sm">
-                            <form method="get" th:action="@{/workout/delete/{id}(id=${workout.getId()})}">
-                            <input type="submit" class="btn btn-danger btn-sm" value="Delete">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <form method="post" th:action="@{/workout}" th:object="${workout}" id="newworkout">
-                <div class="form-group">
-                    <input class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-                           type="text" th:field="*{name}" placeholder="Name">
-                    <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Errors</div>
-                </div>
-                <input type="submit" class="btn btn-success btn-block" value="Add workout">
+                        <div class="form-group">
+                            <div class=" d-flex justify-content-center align-content-between">
+                                <input class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                       type="text" th:field="*{name}" placeholder="Name">
+                                <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Errors</div>
+                                <button type="submit" class="btn btn-info d-flex justify-content-center align-content-between mx-1">
+                                    <i class="material-icons md-18">add</i>
+                                </button>
+                            </div>
+
+
+                     </div>
+
             </form>
-        </div>
+
+</div>
+
         <div class="col">
             <h3>Workout history [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
 
