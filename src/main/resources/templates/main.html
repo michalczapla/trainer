@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<head th:include="fragments/header :: headMeta">
     <title>Trainer</title>
 </head>
 <body>
@@ -15,7 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-4">
-            <h1 class="display-4">Workout groups</h1>
+            <h1 class="display-4">Workouts</h1>
 
             <table class="table table-sm">
                 <tr th:each="workout: ${workouts}">
@@ -48,29 +41,29 @@
 </div>
 
         <div class="col" th:if="${names}">
-            <h3>Workout history [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
+            <h3 class="font-weight-lighter">Workout journal [<span th:text="${(names!=null) ? names.get('currentWorkout') : null}"/>]</h3>
 
             <table class="table table-sm table-hover">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 20%">Date</th>
-                    <th scope="col" style="width: 15%">Weight [kg]</th>
-                    <th scope="col" style="width: 15%">Waist [cm]</th>
-                    <th scope="col" style="width: 20%">Events</th>
+                    <th scope="col" style="width: 20%" class="font-weight-lighter">Date</th>
+                    <th scope="col" style="width: 15%" class="font-weight-lighter">Weight [kg]</th>
+                    <th scope="col" style="width: 15%" class="font-weight-lighter">Waist [cm]</th>
+                    <th scope="col" style="width: 20%" class="font-weight-lighter">Events</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tr th:each="workoutHistory: ${workoutHistoryList}">
-                    <th scope="row" th:text="${workoutHistory.getDate()}"></th>
-                    <td th:text="${workoutHistory.getWeight()}"></td>
-                    <td th:text="${workoutHistory.getWaist()}"></td>
+                    <th scope="row" class="font-weight-normal" th:text="${workoutHistory.getDate()}"></th>
+                    <td class="font-weight-light" th:text="${workoutHistory.getWeight()}"></td>
+                    <td class="font-weight-light" th:text="${workoutHistory.getWaist()}"></td>
                     <td>
                         <i th:if="${workoutHistory.workoutMade}" class="material-icons" title="Workout done">accessibility_new</i>
                         <i th:if="${workoutHistory.image!=null}" class="material-icons" title="Image uploaded">photo_camera</i>
                     </td>
-                    <td>
-                        <a th:href="@{/workouthistory/edit/(h=${workoutHistory.getId()})}" class="btn btn-success btn-sm">Edit</a>
-                        <a th:href="@{/workouthistory/delete/(h=${workoutHistory.getId()})}" class="btn btn-danger btn-sm">Delete</a>
+                    <td class="d-flex justify-content-center align-content-between">
+                        <a th:href="@{/workouthistory/edit/(h=${workoutHistory.getId()})}" class="btn btn-outline-secondary btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">build</i></a>
+                        <a th:href="@{/workouthistory/delete/(h=${workoutHistory.getId()})}" class="btn btn-outline-secondary btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">close</i></a>
                     </td>
                 </tr>
 <!--            </table>-->
@@ -98,46 +91,68 @@
                                 <div class="invalid-feedback" th:errors="*{waist}" th:if="${#fields.hasErrors('waist')}">Errors</div>
                             </div>
                         </td>
-                        <td>
-                            <div class="form-group form-check">
-                                <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"
-                                       type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">
-                                <label class="form-check-label" for="checkbox-workout-made"><i class="material-icons" title="Workout done">accessibility_new</i></label>
-                                <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
+                        <td class="d-flex justify-content-center align-content-between" >
+                            <div>
+                                <div class="form-group form-check">
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-secondary btn-sm d-flex justify-content-center align-content-between">
+                                            <input type="checkbox" checked autocomplete="off" th:field="*{workoutMade}" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"><i class="material-icons" title="Workout done">accessibility_new</i>
+                                        </label>
+                                    </div>
+<!--                                    <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"-->
+<!--                                           type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">-->
+<!--                                    <label class="form-check-label" for="checkbox-workout-made"><i class="material-icons" title="Workout done">accessibility_new</i></label>-->
+                                    <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
+                                </div>
                             </div>
+                            <div>
+                                <div class="form-group">
+    <!--                                <label class="btn btn-default btn-file" th:classappend="${imageError} ? 'is-invalid' : ''">-->
+    <!--                                    Browse <input type="file" style="display: none;" name="imageFile">-->
+    <!--                                    <div class="invalid-feedback" th:text="${imageError}" th:if="${imageError}">Errors</div>-->
+    <!--                                </label>-->
 
-                            <div class="form-group">
-                                <input class="form-control-file" th:classappend="${imageError} ? 'is-invalid' : ''"
-                                       type="file" id="checkbox-image" name="imageFile">
-                                <div class="invalid-feedback" th:text="${imageError}" th:if="${imageError}">Errors</div>
+<!--                                    <input class="form-control-file" th:classappend="${imageError} ? 'is-invalid' : ''"-->
+<!--                                           type="file" id="checkbox-image" name="imageFile">-->
+                                    <span class="btn btn-primary btn-sm d-flex justify-content-center align-content-between btn-file"><i class="material-icons">add_a_photo</i><input type="file" name="imageFile"></span>
+
+
+                                </div>
+                                <div>
+                                     <div th:text="${imageError}" th:if="${imageError}" class="invalid-feedback-2">Errors</div>
+                                </div>
                             </div>
                         </td>
-                        <td>
-                            <input type="submit" class="btn btn-success btn-sm btn-block" value="Add">
+                        <td class="justify-content-center align-content-between">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info btn-sm d-flex justify-content-center align-content-between mx-1">
+                                    <i class="material-icons">add</i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
 
             </form>
             </table>
-            <div class="jumbotron" th:if="${workoutHistoryList.size()>0}">
-                <p class="lead">Statistics</p>
+            <div class="jumbotron" th:if="${workoutHistoryList.size()>1}">
+                <h1 class="display-3">Statistics</h1>
                 <hr class="my-4">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Duration in days
-                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('duration')}"></span>
+                        <span class="border-left border-primary p-2" th:text="${statistics.get('duration')}"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Weight loss [kg]
-                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('weightLoss')}"></span>
+                        <span class="border-left border-primary p-2" th:text="${#numbers.formatDecimal(statistics.get('weightLoss'), 0,2)}"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Waist loss [cm]
-                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('waistLoss')}">1</span>
+                        <span class="border-left border-primary p-2" th:text="${#numbers.formatDecimal(statistics.get('waistLoss'),0,2)}">1</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Number of workouts
-                        <span class="badge badge-primary badge-pill" th:text="${statistics.get('workoutCount')}">1</span>
+                        <span class="border-left border-primary p-2" th:text="${statistics.get('workoutCount')}">1</span>
                     </li>
                 </ul>
 
