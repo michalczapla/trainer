@@ -55,6 +55,25 @@ public class WorkoutHistoryController {
         return "editWorkoutHistory";
     }
 
+    //z uwagi na zagniezdzenie formularzy musze adresowac na GET
+   @GetMapping("/edit/{id}/clear")
+    public String clearImage(@PathVariable String id, @AuthenticationPrincipal User user) {
+        logger.info("Trying to clear image from id: "+id);
+        if (!id.equals("")){
+            Long IdLong = WorkoutController.convertStringToLong(id);
+            if (IdLong==null) return "redirect:/";
+            Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByIdAndUser(IdLong,user);
+
+            if (workoutHistory.isPresent()) {
+                storageService.markArchive(workoutHistory.get().getImage());
+                workoutHistory.get().setImage(null);
+                workoutHistoryRepository.save(workoutHistory.get());
+            }
+            return "redirect:/workouthistory/edit/?h=" + id;
+        }
+        return "redirect:/";
+    }
+
     @PostMapping("/edit/{id}")
     public String editWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @RequestParam MultipartFile imageFile, @PathVariable String id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal User user) {
         boolean errors=false;

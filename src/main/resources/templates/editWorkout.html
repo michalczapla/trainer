@@ -6,7 +6,7 @@
 <body>
 <section th:replace="fragments/header :: header">Header</section>
 <div class="container">
-    <h1>You are editing <span th:text="${workoutToEditName}">dataToEdit</span>.</h1>
+    <h1 class="display-4">You are editing <span th:text="${workoutToEditName}">dataToEdit</span>.</h1>
 
     <form method="post" th:action="@{/workout/edit/{id}(id=${workoutToEdit.getId()})}" id="editForm" th:object="${workoutToEdit}">
         <div class="form-group">
@@ -14,9 +14,9 @@
                    type="text" th:field="*{name}" placeholder="Name">
             <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Errors</div>
         </div>
-        <input type="submit" class="btn btn-success" value="Save changes">
+        <input type="submit" class="btn btn-info" value="Save changes">
         <a href="/">
-            <input type="button" class="btn btn-danger" value="Cancel">
+            <input type="button" class="btn btn-secondary" value="Cancel">
         </a>
 
     </form>
