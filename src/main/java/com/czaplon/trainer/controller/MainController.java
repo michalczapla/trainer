@@ -78,7 +78,7 @@ public class MainController {
                     sessionParameters.setAndValidateCurrentWorkout(h.get());
                 }
             }
-        if (workoutRepository.count()>0) {
+        if (!workoutRepository.findAllByUser(user).isEmpty()) {
             Map<String, String> names = new HashMap<>();
             names.put("currentWorkout", sessionParameters.getCurrentWorkout(workoutRepository).getName());
 

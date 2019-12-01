@@ -46,6 +46,12 @@ public class RegisterController {
                 result.rejectValue("confirmPassword","error.confirmPassword","Passwords has to match");
             return "register";
         }
+        User currentUser = userRepository.findByUsername(registrationForm.getUsername());
+        if (currentUser!=null) {
+            result.rejectValue("username","error.username","User already exists");
+            return "register";
+        }
+
         User newUser  = registrationForm.toUser();
         newUser.setPassword(passwordEncoder.encode(registrationForm.getPassword()));
         userRepository.save(newUser);
