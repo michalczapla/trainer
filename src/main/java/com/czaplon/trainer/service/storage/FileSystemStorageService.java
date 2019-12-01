@@ -58,7 +58,7 @@ public class FileSystemStorageService implements StorageService {
             "image/x-rgb"));
 
     @Override
-    public String store(MultipartFile file) throws IOException {
+    public String store(MultipartFile file) throws IOException, StorageException {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         logger.info(file.getBytes().toString());
         String hashedFilename = DigestUtils.md5Hex(file.getBytes().toString()) + "." + FilenameUtils.getExtension(filename);
