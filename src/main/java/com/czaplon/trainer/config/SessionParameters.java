@@ -18,8 +18,17 @@ public class SessionParameters {
         return (currentWorkout==null)? 1 : currentWorkout;
     }
 
-    public Workout getCurrentWorkout(WorkoutRepository workoutRepository) {
-        Optional<Workout> currentWorkout = workoutRepository.findById(getCurrentWorkout());
+    public Workout getCurrentWorkout(WorkoutRepository workoutRepository, User user) {
+        if (currentWorkout==null) {
+            Optional<Workout> workout = workoutRepository.getFirstByUserOrderByIdAsc(user);
+            if (workout.isPresent()){
+                currentWorkout = workout.get().getId();
+                return workout.get();
+            } else {
+                return null;
+            }
+        }
+        Optional<Workout> currentWorkout = workoutRepository.findByIdAndUser(getCurrentWorkout(),user);
         if (currentWorkout.isPresent()) {
             return currentWorkout.get();
         } else {

@@ -80,7 +80,7 @@ public class MainController {
             }
         if (!workoutRepository.findAllByUser(user).isEmpty()) {
             Map<String, String> names = new HashMap<>();
-            names.put("currentWorkout", sessionParameters.getCurrentWorkout(workoutRepository).getName());
+            names.put("currentWorkout", sessionParameters.getCurrentWorkout(workoutRepository,user).getName());
 
             Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(), user);
 
@@ -131,7 +131,7 @@ public class MainController {
             return "redirect:/";
         }
         workoutHistory.setUser(user);
-        Workout currentWorkout = sessionParameters.getCurrentWorkout(workoutRepository);
+        Workout currentWorkout = sessionParameters.getCurrentWorkout(workoutRepository,user);
         if (currentWorkout!=null) {
             workoutHistory.setWorkout(currentWorkout);
         }
