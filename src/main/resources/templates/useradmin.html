@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/header :: headMeta">
+    <title id="pageTitle">Update user info</title>
+</head>
+<body>
+<section th:replace="fragments/header :: header">Header</section>
+<div class="d-flex align-items-center flex-column justify-content-center h-75">
+
+    <h1 class="display-4">User administration of <span th:text="${username}" /></h1>
+    <form method="post" th:action="@{/user/}" th:object="${user}">
+<!--        <div class="form-group">-->
+<!--            <input class="form-control" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"-->
+<!--                   type="text" th:field="*{username}" placeholder="username">-->
+<!--            <div class="invalid-feedback" th:errors="*{username}" th:if="${#fields.hasErrors('username')}">Errors</div>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <input class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"-->
+<!--                   type="password" th:field="*{password}" placeholder="password">-->
+<!--            <div class="invalid-feedback" th:errors="*{password}" th:if="${#fields.hasErrors('password')}">Errors</div>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <input class="form-control" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"-->
+<!--                   type="password" th:field="*{confirmPassword}" placeholder="confirm password">-->
+<!--            <div class="invalid-feedback" th:errors="*{confirmPassword}" th:if="${#fields.hasErrors('confirmPassword')}">Errors</div>-->
+<!--        </div>-->
+        <div class="form-group row">
+            <label for="nameInput" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+                <input class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                       type="text" th:field="*{name}" placeholder="name" id="nameInput">
+                <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Errors</div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="emailInput" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                       type="email" th:field="*{email}" placeholder="email" id="emailInput">
+                <div class="invalid-feedback" th:errors="*{email}" th:if="${#fields.hasErrors('email')}">Errors</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="heightInput" class="col-sm-4 col-form-label">Height [cm]</label>
+            <div class="col-sm-8">
+                <input class="form-control" th:classappend="${#fields.hasErrors('height')} ? 'is-invalid' : ''"
+                       type="number" th:field="*{height}" placeholder="height [cm]" step="0.01" id="heightInput">
+                <div class="invalid-feedback" th:errors="*{height}" th:if="${#fields.hasErrors('height')}">Errors</div>
+            </div>
+        </div>
+
+        <a class="btn btn-primary btn-block" href="password/">Password change</a>
+        <hr/>
+        <input type="submit" class="btn btn-info btn-block" value="Update">
+        <a class="btn btn-secondary btn-block" href="/">Cancel</a>
+    </form>
+
+</div>
+</body>
+</html>

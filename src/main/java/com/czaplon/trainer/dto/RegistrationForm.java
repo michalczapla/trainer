@@ -24,7 +24,6 @@ public class RegistrationForm {
 
     @NotNull(message = "Password cannot be empty")
     @Size(min = 1, message = "Password cannot be empty")
-
     private String confirmPassword;
     private String email;
 
