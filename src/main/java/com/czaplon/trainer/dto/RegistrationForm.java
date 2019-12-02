@@ -3,6 +3,7 @@ package com.czaplon.trainer.dto;
 
 
 import com.czaplon.trainer.model.User;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -20,10 +21,12 @@ public class RegistrationForm {
 
     @NotNull(message = "Password cannot be empty")
     @Size(min = 1, message = "Password cannot be empty")
+    @Length(min = 5,message = "Password needs to be at least 5 character long")
     private String password;
 
     @NotNull(message = "Password cannot be empty")
     @Size(min = 1, message = "Password cannot be empty")
+    @Length(min = 5,message = "Password needs to be at least 5 character long")
     private String confirmPassword;
     private String email;
 

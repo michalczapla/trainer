@@ -1,6 +1,7 @@
 package com.czaplon.trainer.dto;
 
 import com.czaplon.trainer.model.User;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,10 +14,12 @@ public class PasswordChangeForm {
 
     @NotNull(message = "New password cannot be empty")
     @Size(min = 1, message = "New password cannot be empty")
+    @Length(min = 5,message = "Password needs to be at least 5 character long")
     private String newPassword;
 
     @NotNull(message = "New password cannot be empty")
     @Size(min = 1, message = "New password cannot be empty")
+    @Length(min = 5,message = "Password needs to be at least 5 character long")
     private String confirmPassword;
 
     public PasswordChangeForm() {
