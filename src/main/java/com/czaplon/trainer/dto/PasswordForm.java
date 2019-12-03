@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class PasswordForm {
+public abstract class PasswordForm {
     @NotNull(message = "Password cannot be empty")
     @Size(min = 1, message = "Password cannot be empty")
     @Length(min = 5,message = "Password needs to be at least 5 character long")

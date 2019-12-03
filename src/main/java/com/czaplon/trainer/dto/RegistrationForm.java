@@ -9,7 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class RegistrationForm {
+public class RegistrationForm extends PasswordForm{
 
     @NotNull(message = "Username cannot be empty")
     @Size(min = 3, message = "Username cannot be shorten than 3 characters")
@@ -19,15 +19,15 @@ public class RegistrationForm {
     @Size(min = 1, message = "Name cannot be empty")
     private String name;
 
-    @NotNull(message = "Password cannot be empty")
-    @Size(min = 1, message = "Password cannot be empty")
-    @Length(min = 5,message = "Password needs to be at least 5 character long")
-    private String password;
-
-    @NotNull(message = "Password cannot be empty")
-    @Size(min = 1, message = "Password cannot be empty")
-    @Length(min = 5,message = "Password needs to be at least 5 character long")
-    private String confirmPassword;
+//    @NotNull(message = "Password cannot be empty")
+//    @Size(min = 1, message = "Password cannot be empty")
+//    @Length(min = 5,message = "Password needs to be at least 5 character long")
+//    private String password;
+//
+//    @NotNull(message = "Password cannot be empty")
+//    @Size(min = 1, message = "Password cannot be empty")
+//    @Length(min = 5,message = "Password needs to be at least 5 character long")
+//    private String confirmPassword;
     private String email;
 
     @NotNull(message = "Height cannot be empty")
@@ -38,10 +38,11 @@ public class RegistrationForm {
     }
 
     public RegistrationForm(String username, String name, String password, String confirmPassword, String email, Float height) {
+        super(password,confirmPassword);
         this.username = username;
         this.name = name;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
+//        this.password = password;
+//        this.confirmPassword = confirmPassword;
         this.email = email;
         this.height = height;
     }
@@ -62,21 +63,21 @@ public class RegistrationForm {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
+//    public String getPassword() {
+//        return 'password';
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public String getConfirmPassword() {
+//        return confirmPassword;
+//    }
+//
+//    public void setConfirmPassword(String confirmPassword) {
+//        this.confirmPassword = confirmPassword;
+//    }
 
     public String getEmail() {
         return email;
@@ -95,20 +96,20 @@ public class RegistrationForm {
     }
 
     public User toUser(){
-        return new User(this.username,this.name,this.password,this.email,this.height);
+        return new User(this.username,this.name,getPassword(),this.email,this.height);
     }
 
-    public boolean isPasswordEquals() {
-        return password.equals(confirmPassword);
-    }
+//    public boolean isPasswordEquals() {
+//        return password.equals(confirmPassword);
+//    }
 
     @Override
     public String toString() {
         return "RegistrationForm{" +
                 "username='" + username + '\'' +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", confirmPassword='" + confirmPassword + '\'' +
+                ", password='" + getPassword() + '\'' +
+                ", confirmPassword='" + getConfirmPassword() + '\'' +
                 ", email='" + email + '\'' +
                 ", height=" + height +
                 '}';

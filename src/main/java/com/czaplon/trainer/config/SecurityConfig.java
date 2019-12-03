@@ -35,11 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login");
+                .loginPage("/login")
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/");
 
 //        konfiguracja developerska dla konsoli H2:
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+//        http.csrf().disable();
+//        http.headers().frameOptions().disable();
     }
 
 

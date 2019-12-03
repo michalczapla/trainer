@@ -54,19 +54,19 @@ public class UserAdminController {
     @PostMapping("/")
     public String saveUserChanges(@Valid @ModelAttribute("user") UserAdminForm userAdminForm, BindingResult result, @AuthenticationPrincipal User user) {
         if (result.hasErrors()) {
-            logger.warn("Errors during user update");
             return "useradmin";
         }
         user.setName(userAdminForm.getName());
         user.setEmail(userAdminForm.getEmail());
         user.setHeight(userAdminForm.getHeight());
+        logger.info("User "+user.getUsername()+" has changed personal data. New data: "+userAdminForm.toString());
         userRepository.save(user);
+
         return "redirect:/";
     }
 
     @PostMapping("/password/")
     public String updatePassword(@Valid @ModelAttribute("passwordForm") PasswordChangeForm passwordChangeForm, BindingResult result, @AuthenticationPrincipal User user) {
-        logger.info(passwordChangeForm.toString());
         if (!passwordChangeForm.isPasswordEquals()) {
             result.rejectValue("confirmPassword","error.confirmPassword","Passwords has to match");
         }
@@ -75,10 +75,12 @@ public class UserAdminController {
         }
 
         if (result.hasErrors()) {
+            logger.info("User "+user.getUsername()+ " has tried to change password. Unsuccessfully.");
             return "passadmin";
         } else {
-            user.setPassword(passwordEncoder.encode(passwordChangeForm.getNewPassword()));
+            user.setPassword(passwordEncoder.encode(passwordChangeForm.getPassword()));
             userRepository.save(user);
+            logger.info("User "+user.getUsername()+ " has changed password.");
             return "redirect:/user/";
         }
     }

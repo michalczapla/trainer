@@ -66,4 +66,13 @@ public class UserAdminForm {
     public void setHeight(Float height) {
         this.height = height;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", height=" + height +
+                '}';
+    }
 }

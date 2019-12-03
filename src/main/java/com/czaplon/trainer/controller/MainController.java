@@ -93,7 +93,7 @@ public class MainController {
 
     @PostMapping("/workout")
     public String addWorkout(@Valid Workout workout, BindingResult result, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes) {
-        logger.info(workout.toString());
+
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workout",result);
             redirectAttributes.addFlashAttribute("workout",workout);
@@ -102,21 +102,20 @@ public class MainController {
         workout.setUser(user);
         workoutRepository.save(workout);
         sessionParameters.setAndValidateCurrentWorkout(workout.getId().toString());
-        logger.info(workout.toString());
+        logger.info("New group added: "+ workout.toString());
         return "redirect:/";
     }
 
     @PostMapping("/workouthistory")
     public String addWorkoutHistory(@Valid WorkoutHistory workoutHistory, BindingResult result, @RequestParam MultipartFile imageFile, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes){
-        logger.info(workoutHistory.toString());
-        logger.info(imageFile.getContentType());
+
 //        checking image
         if (!imageFile.isEmpty()) {
             try {
                 workoutHistory.setImage(storageService.store(imageFile));
             } catch (IOException | StorageException | StorageFileNotFoundException e) {
                 redirectAttributes.addFlashAttribute("imageError", e.getMessage());
-                logger.warn(e.getMessage());
+
                 ObjectError error = new ObjectError("imageFile","Image not supported");
                 result.addError(error);
 //                return "redirect:/";
@@ -125,7 +124,7 @@ public class MainController {
 
 //        checking Form validity
         if (result.hasErrors()) {
-            logger.info("errors mapping workouthistory :(");
+
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.workoutHistory",result);
             redirectAttributes.addFlashAttribute("workoutHistory",workoutHistory);
             return "redirect:/";
@@ -136,7 +135,7 @@ public class MainController {
             workoutHistory.setWorkout(currentWorkout);
         }
         workoutHistoryRepository.save(workoutHistory);
-        logger.info(workoutHistory.toString());
+        logger.info("New workout added: "+workoutHistory.toString());
         return "redirect:/";
     }
 

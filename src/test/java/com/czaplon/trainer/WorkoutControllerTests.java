@@ -18,17 +18,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class WorkoutControllerTests {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Test
-    public void shouldUpdateWorkoutData() throws Exception{
-        ResultActions result = this.mockMvc.perform(get("/delete/xyz"));
-
-        result
-                .andExpect(status().isOk())
-                .andExpect(redirectedUrl("/"));
-
-    }
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @Test
+//    public void shouldUpdateWorkoutData() throws Exception{
+//        ResultActions result = this.mockMvc.perform(get("/delete/xyz"));
+//
+//        result
+//                .andExpect(status().isOk())
+//                .andExpect(redirectedUrl("/"));
+//
+//    }
 
 }

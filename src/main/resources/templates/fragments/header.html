@@ -26,7 +26,9 @@
                    <a th:href="@{/user/}"><span class="text-secondary" th:text="${loggedUser.get('name')}"/></a>
                 </div>
             </div>
-            <a class="nav-item nav-link ml-2 text-secondary" href="/logout">logout</a>
+            <form th:action="@{/logout}" method="post">
+            <input type="submit" class="btn btn-link nav-item nav-link ml-2 text-secondary" value="logout" />
+            </form>
         </div>
     </div>
 </nav>

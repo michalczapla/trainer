@@ -60,6 +60,7 @@ public class WorkoutController {
         if (idLong!=null) {
             workoutRepository.deleteById(idLong);
             sessionParameters.setLastWorkout(workoutRepository, user);
+            logger.info("Group with ID["+ idLong +"] was removed.");
         }
 
         return "redirect:/";
@@ -94,8 +95,10 @@ public class WorkoutController {
         if (idLong==null) return "redirect:/";
         Optional<Workout> workout = workoutRepository.findById(idLong);
         if (idLong!=null && workout.isPresent()) {
+            logger.info("Group was edited. ID="+idLong+", old value="+workout.get().getName()+", new value="+workoutToEdit.getName());
             workout.get().setName(workoutToEdit.getName());
             workoutRepository.save(workout.get());
+
         }
         return "redirect:/";
     }
