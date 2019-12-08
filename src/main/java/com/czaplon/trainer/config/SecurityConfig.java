@@ -45,11 +45,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.headers().frameOptions().disable();
     }
 
-
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return passwordEncoder;
-    }
 }

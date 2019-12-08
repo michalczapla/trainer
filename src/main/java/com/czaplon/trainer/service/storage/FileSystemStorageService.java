@@ -60,15 +60,16 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public String store(MultipartFile file) throws IOException, StorageException {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        logger.info(file.getBytes().toString());
+//        logger.info(file.getBytes().toString());
         String hashedFilename = DigestUtils.md5Hex(file.getBytes().toString()) + "." + FilenameUtils.getExtension(filename);
-        logger.info(file.getContentType());
-        logger.info("TIKA: "+TIKAFileAnalizer.checkMIMEType(file));
+//        logger.info(file.getContentType());
+//        logger.info("TIKA: "+TIKAFileAnalizer.checkMIMEType(file));
         if (allowedFiles.contains(TIKAFileAnalizer.checkMIMEType(file))) {
 
 
             try {
                 if (file.isEmpty()) {
+                    logger.warn("Failed to store empty file " + filename);
                     throw new StorageException("Failed to store empty file " + filename);
                 }
                 if (filename.contains("..")) {
@@ -78,11 +79,12 @@ public class FileSystemStorageService implements StorageService {
                                     + filename);
                 }
                 try (InputStream inputStream = file.getInputStream()) {
-
+                    logger.info("File was successfully uploaded. Filename "+ hashedFilename);
                     Files.copy(inputStream, this.rootLocation.resolve(hashedFilename),
                             StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (IOException e) {
+                logger.warn("Failed to store file " + filename);
                 throw new StorageException("Failed to store file " + filename, e);
             }
         } else {
@@ -151,6 +153,7 @@ public class FileSystemStorageService implements StorageService {
         try {
             Path originalPath = this.rootLocation.resolve(filename);
             Path archivedPath = this.rootLocation.resolve("(archived)"+filename);
+            logger.info("File "+originalPath+" was archived");
             Files.move(originalPath,archivedPath);
         } catch (IOException e) {
             logger.warn("Error during renaming the file");
