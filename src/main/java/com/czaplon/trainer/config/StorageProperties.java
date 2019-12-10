@@ -5,7 +5,7 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    private String location = "upload-dir";
+    private String location = "trainer/upload-dir";
     private String mappedLocation = "imgs";
 
     public String getLocation() {

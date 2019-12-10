@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -56,6 +58,12 @@ public class FileSystemStorageService implements StorageService {
             "image/x-portable-graymap",
             "image/x-portable-pixmap",
             "image/x-rgb"));
+
+    @PostConstruct
+    private void logInitialConfig() {
+        logger.info("Working path :" + new File(".").getAbsolutePath());
+    }
+
 
     @Override
     public String store(MultipartFile file) throws IOException, StorageException {
