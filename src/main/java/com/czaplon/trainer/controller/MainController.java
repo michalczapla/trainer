@@ -7,6 +7,7 @@ import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
 import com.czaplon.trainer.repository.WorkoutRepository;
 import com.czaplon.trainer.service.StatisticsService;
+import com.czaplon.trainer.service.WorkoutHistoryService;
 import com.czaplon.trainer.service.storage.StorageException;
 import com.czaplon.trainer.service.storage.StorageFileNotFoundException;
 import com.czaplon.trainer.service.storage.StorageService;
@@ -27,13 +28,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.czaplon.trainer.controller.GlobalControllerAdvice.convertStringToLong;
+
 @Controller
 @RequestMapping("/")
 public class MainController {
 
     private Logger logger = LoggerFactory.getLogger(MainController.class);
     private WorkoutRepository workoutRepository;
-    private WorkoutHistoryRepository workoutHistoryRepository;
+    private WorkoutHistoryService workoutHistoryService;
     private SessionParameters sessionParameters;
     private StorageService storageService;
     private StatisticsService statisticsService;
@@ -41,12 +44,12 @@ public class MainController {
 
     @Autowired
     public MainController(WorkoutRepository workoutRepository,
-                          WorkoutHistoryRepository workoutHistoryRepository,
+                          WorkoutHistoryService workoutHistoryService,
                           SessionParameters sessionParameters,
                           StorageService storageService,
                           StatisticsService statisticsService) {
         this.workoutRepository = workoutRepository;
-        this.workoutHistoryRepository = workoutHistoryRepository;
+        this.workoutHistoryService = workoutHistoryService;
         this.sessionParameters=sessionParameters;
         this.storageService=storageService;
         this.statisticsService = statisticsService;
@@ -73,7 +76,7 @@ public class MainController {
     public String getMain( @AuthenticationPrincipal User user, Model model, @RequestParam Optional<String> h) {
 
             if (h.isPresent()) {
-                Long idLong = WorkoutController.convertStringToLong(h.get());
+                Long idLong = convertStringToLong(h.get());
                 if (idLong!=null && workoutRepository.findByIdAndUser(idLong,user).isPresent()) {
                     sessionParameters.setAndValidateCurrentWorkout(h.get());
                 }
@@ -85,7 +88,7 @@ public class MainController {
             Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(), user);
 
             model.addAttribute("names", names);
-            model.addAttribute("workoutHistoryList", workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
+            model.addAttribute("workoutHistoryList", workoutHistoryService.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
             model.addAttribute("statistics", statistics);
         }
         return "main";
@@ -134,7 +137,7 @@ public class MainController {
         if (currentWorkout!=null) {
             workoutHistory.setWorkout(currentWorkout);
         }
-        workoutHistoryRepository.save(workoutHistory);
+        workoutHistoryService.save(workoutHistory);
         logger.info("New workout added: "+workoutHistory.toString());
         return "redirect:/";
     }

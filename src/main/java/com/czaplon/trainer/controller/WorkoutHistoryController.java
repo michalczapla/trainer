@@ -3,6 +3,7 @@ package com.czaplon.trainer.controller;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
+import com.czaplon.trainer.service.WorkoutHistoryService;
 import com.czaplon.trainer.service.storage.StorageException;
 import com.czaplon.trainer.service.storage.StorageFileNotFoundException;
 import com.czaplon.trainer.service.storage.StorageService;
@@ -22,26 +23,28 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.czaplon.trainer.controller.GlobalControllerAdvice.convertStringToLong;
+
 @Controller
 @RequestMapping("/workouthistory")
 public class WorkoutHistoryController {
 
     private Logger logger = LoggerFactory.getLogger(WorkoutHistoryController.class);
-    private WorkoutHistoryRepository workoutHistoryRepository;
+    private WorkoutHistoryService workoutHistoryService;
     private StorageService storageService;
 
     @Autowired
-    public WorkoutHistoryController(WorkoutHistoryRepository workoutHistoryRepository, StorageService storageService) {
-        this.workoutHistoryRepository = workoutHistoryRepository;
+    public WorkoutHistoryController(WorkoutHistoryService workoutHistoryService, StorageService storageService) {
+        this.workoutHistoryService = workoutHistoryService;
         this.storageService = storageService;
     }
 
     @GetMapping("/edit")
     public String getEditWorkoutHistoryForm(Model model, @RequestParam Optional<String> h, @AuthenticationPrincipal User user) {
-        Long IdLong = WorkoutController.convertStringToLong(h.get());
+        Long IdLong = convertStringToLong(h.get());
         if (IdLong==null) return "redirect:/";
 
-        Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByIdAndUser(IdLong,user);
+        Optional<WorkoutHistory> workoutHistory = workoutHistoryService.findByIdAndUser(IdLong,user);
 
         if (workoutHistory.isPresent()) {
             model.addAttribute("workoutHisotryToEditName", workoutHistory.get().getDate());
@@ -60,14 +63,20 @@ public class WorkoutHistoryController {
     public String clearImage(@PathVariable String id, @AuthenticationPrincipal User user) {
         logger.info("Trying to clear image from id: "+id);
         if (!id.equals("")){
-            Long IdLong = WorkoutController.convertStringToLong(id);
+            Long IdLong = convertStringToLong(id);
             if (IdLong==null) return "redirect:/";
-            Optional<WorkoutHistory> workoutHistory = workoutHistoryRepository.findByIdAndUser(IdLong,user);
+            Optional<WorkoutHistory> workoutHistory = workoutHistoryService.findByIdAndUser(IdLong,user);
 
             if (workoutHistory.isPresent()) {
-                storageService.markArchive(workoutHistory.get().getImage());
-                workoutHistory.get().setImage(null);
-                workoutHistoryRepository.save(workoutHistory.get());
+                try {
+                    storageService.markArchive(workoutHistory.get().getImage());
+                } catch (StorageException e) {
+                    logger.warn("Error during renaming the file "+workoutHistory.get().getImage()+". File not exists? Removing entry from database :" + workoutHistory.toString());
+                } finally {
+                    workoutHistory.get().setImage(null);
+                    workoutHistoryService.save(workoutHistory.get());
+                }
+
             }
             return "redirect:/workouthistory/edit/?h=" + id;
         }
@@ -97,17 +106,17 @@ public class WorkoutHistoryController {
         }
 
         if (errors) return "redirect:/workouthistory/edit?h="+id;
-        workoutHistoryRepository.save(workoutHistory);
+        workoutHistoryService.save(workoutHistory);
         return "redirect:/";
     }
 
     @GetMapping("/delete")
     public String getDeleteWorkoutHistoryForm(@RequestParam Optional<String> h, Model model, @AuthenticationPrincipal User user) {
-        Long idLong = WorkoutController.convertStringToLong(h.get());
+        Long idLong = convertStringToLong(h.get());
         if (!h.isPresent() || idLong==null) {
             return "redirect:/";
         }
-        Optional<WorkoutHistory> workoutToDelete = workoutHistoryRepository.findByIdAndUser(idLong, user);
+        Optional<WorkoutHistory> workoutToDelete = workoutHistoryService.findByIdAndUser(idLong, user);
         if (!workoutToDelete.isPresent()) return "redirect:/";
 
         model.addAttribute("dataToDelete",workoutToDelete.get().getDate());
@@ -119,16 +128,20 @@ public class WorkoutHistoryController {
     @PostMapping("/delete")
     @Transactional
     public String deleteWorkoutHistory(@RequestParam Optional<String> h, @AuthenticationPrincipal User user) {
-        Long idLong = WorkoutController.convertStringToLong(h.get());
+        Long idLong = convertStringToLong(h.get());
         if (!h.isPresent() || idLong==null) {
             return "redirect:/";
         }
-        Optional<WorkoutHistory> workoutToDelete = workoutHistoryRepository.findByIdAndUser(idLong,user);
+        Optional<WorkoutHistory> workoutToDelete = workoutHistoryService.findByIdAndUser(idLong,user);
         if (workoutToDelete.isPresent() && workoutToDelete.get().getImage()!=null) {
-            storageService.markArchive(workoutToDelete.get().getImage());
+            try {
+                storageService.markArchive(workoutToDelete.get().getImage());
+            } catch (StorageException e) {
+                logger.warn("Error during renaming the file "+workoutToDelete.get().getImage()+". File not exists? Removing entry from database :" + workoutToDelete.toString());
+            }
         }
-        workoutHistoryRepository.deleteWorkoutHistoryByIdAndUser(idLong,user);
-
+        workoutHistoryService.deleteWorkoutHistoryByIdAndUser(idLong,user);
+        logger.info("Entry "+workoutToDelete+" deleted.");
         return "redirect:/";
     }
 

@@ -35,4 +35,16 @@ public class GlobalControllerAdvice {
 
         return userInfo;
     }
+
+    protected static Long convertStringToLong(String id) {
+        if (id==null) return null;
+        Long idLong = null;
+        try {
+            idLong = Long.parseLong(id);
+        } catch (NumberFormatException ex) {
+
+        }
+        return idLong;
+    }
+
 }

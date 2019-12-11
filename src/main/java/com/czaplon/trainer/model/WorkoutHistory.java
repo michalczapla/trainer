@@ -39,6 +39,8 @@ public class WorkoutHistory {
     @Positive(message = "Waist needs to be positive")
     private Float waist;
 
+    private Float bmi;
+
     @NotNull(message = "Cannot be empty")
     private boolean workoutMade;
 
@@ -59,6 +61,7 @@ public class WorkoutHistory {
         this.waist = waist;
         this.workoutMade = workoutMade;
         this.user = user;
+        this.bmi = 0.0f;
     }
 
     public WorkoutHistory() {
@@ -120,6 +123,14 @@ public class WorkoutHistory {
         this.user = user;
     }
 
+    public Float getBmi() {
+        return bmi;
+    }
+
+    public void setBmi(Float bmi) {
+        this.bmi = bmi;
+    }
+
     @Override
     public String toString() {
         return "WorkoutHistory{" +
@@ -131,6 +142,8 @@ public class WorkoutHistory {
                 ", waist=" + waist +
                 ", workoutMade=" + workoutMade +
                 ", image=" + image +
+                ", bmi=" + bmi +
                 '}';
     }
+
 }

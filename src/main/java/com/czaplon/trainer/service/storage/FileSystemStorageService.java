@@ -161,10 +161,9 @@ public class FileSystemStorageService implements StorageService {
         try {
             Path originalPath = this.rootLocation.resolve(filename);
             Path archivedPath = this.rootLocation.resolve("(archived)"+filename);
-            logger.info("File "+originalPath+" was archived");
             Files.move(originalPath,archivedPath);
+            logger.info("File "+originalPath+" was archived");
         } catch (IOException e) {
-            logger.warn("Error during renaming the file");
             throw new StorageException("Error during renaming the file");
         }
     }

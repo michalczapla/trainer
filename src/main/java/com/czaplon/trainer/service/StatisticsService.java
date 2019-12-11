@@ -3,7 +3,6 @@ package com.czaplon.trainer.service;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +15,19 @@ import java.util.Optional;
 @Service
 public class StatisticsService {
 
-    private WorkoutHistoryRepository workoutHistoryRepository;
+    private WorkoutHistoryService workoutHistoryService;
 
     @Autowired
-    public StatisticsService(WorkoutHistoryRepository workoutHistoryRepository) {
-        this.workoutHistoryRepository = workoutHistoryRepository;
+    public StatisticsService(WorkoutHistoryService workoutHistoryService) {
+        this.workoutHistoryService = workoutHistoryService;
     }
 
     public Map<String, String> generateStatistics(Long workoutId, User user) {
         Map<String,String> statistics = new HashMap<>();
         // duration
-        Optional<WorkoutHistory> firstWorkout = workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateAsc(workoutId,user);
-        Optional<WorkoutHistory> lastWorkout = workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateDesc(workoutId,user);
-        Integer workoutCount = workoutHistoryRepository.findAllByWorkoutIdAndUserAndWorkoutMade(workoutId,user,true).size();
+        Optional<WorkoutHistory> firstWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateAsc(workoutId,user);
+        Optional<WorkoutHistory> lastWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateDesc(workoutId,user);
+        Integer workoutCount = workoutHistoryService.findAllByWorkoutIdAndUserAndWorkoutMade(workoutId,user,true).size();
         if (firstWorkout.isPresent()) {
             statistics.put("duration", String.valueOf(Duration.between(firstWorkout.get().getDate().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()));
         }
@@ -39,10 +38,10 @@ public class StatisticsService {
         statistics.put("workoutCount",String.valueOf(workoutCount));
 
 //        historia z obrazkami
-        Optional<WorkoutHistory> firstWorkoutImg = workoutHistoryRepository.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateAsc(workoutId,user);
-        Optional<WorkoutHistory> lastWorkoutImg = workoutHistoryRepository.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateDesc(workoutId,user);
+        Optional<WorkoutHistory> firstWorkoutImg = workoutHistoryService.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateAsc(workoutId,user);
+        Optional<WorkoutHistory> lastWorkoutImg = workoutHistoryService.findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateDesc(workoutId,user);
 
-        if (workoutHistoryRepository.count()>1 &&
+        if (workoutHistoryService.count()>1 &&
                 firstWorkoutImg.isPresent() &&
                 lastWorkoutImg.isPresent() &&
                 firstWorkoutImg.get().getId()!=lastWorkoutImg.get().getId()) {

@@ -21,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static com.czaplon.trainer.controller.GlobalControllerAdvice.convertStringToLong;
+
 @Controller
 @RequestMapping("/workout")
 public class WorkoutController {
@@ -103,17 +105,5 @@ public class WorkoutController {
         return "redirect:/";
     }
 
-
-
-    public static Long convertStringToLong(String id) {
-        if (id==null) return null;
-        Long idLong = null;
-        try {
-            idLong = Long.parseLong(id);
-        } catch (NumberFormatException ex) {
-
-        }
-        return idLong;
-    }
 
 }

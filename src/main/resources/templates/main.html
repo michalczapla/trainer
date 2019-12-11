@@ -46,9 +46,10 @@
             <table class="table table-sm table-hover">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 20%" class="font-weight-lighter">Date</th>
+                    <th scope="col" style="width: 10%" class="font-weight-lighter">Date</th>
                     <th scope="col" style="width: 15%" class="font-weight-lighter">Weight [kg]</th>
                     <th scope="col" style="width: 15%" class="font-weight-lighter">Waist [cm]</th>
+                    <th scope="col" style="width: 15%" class="font-weight-lighter">BMI</th>
                     <th scope="col" style="width: 20%" class="font-weight-lighter">Events</th>
                     <th scope="col"></th>
                 </tr>
@@ -57,6 +58,7 @@
                     <th scope="row" class="font-weight-normal" th:text="${workoutHistory.getDate()}"></th>
                     <td class="font-weight-light" th:text="${workoutHistory.getWeight()}"></td>
                     <td class="font-weight-light" th:text="${workoutHistory.getWaist()}"></td>
+                    <td class="font-weight-light" th:text="${#numbers.formatDecimal(workoutHistory.getBmi(),0,2)}"></td>
                     <td>
                         <i th:if="${workoutHistory.workoutMade}" class="material-icons" title="Workout done">accessibility_new</i>
                         <i th:if="${workoutHistory.image!=null}" class="material-icons" title="Image uploaded">photo_camera</i>
