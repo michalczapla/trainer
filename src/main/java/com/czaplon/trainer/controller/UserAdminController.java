@@ -4,6 +4,7 @@ import com.czaplon.trainer.dto.PasswordChangeForm;
 import com.czaplon.trainer.dto.UserAdminForm;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.repository.UserRepository;
+import com.czaplon.trainer.service.WorkoutHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,13 @@ public class UserAdminController {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private WorkoutHistoryService workoutHistoryService;
 
     @Autowired
-    public UserAdminController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserAdminController(UserRepository userRepository, PasswordEncoder passwordEncoder, WorkoutHistoryService workoutHistoryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.workoutHistoryService=workoutHistoryService;
     }
 
     @ModelAttribute("username")
@@ -62,6 +65,7 @@ public class UserAdminController {
         logger.info("User "+user.getUsername()+" has changed personal data. New data: "+userAdminForm.toString());
         userRepository.save(user);
 
+        workoutHistoryService.recalculateBMI(user);
         return "redirect:/";
     }
 

@@ -88,7 +88,7 @@ public class MainController {
             Map<String, String> statistics = statisticsService.generateStatistics(sessionParameters.getCurrentWorkout(), user);
 
             model.addAttribute("names", names);
-            model.addAttribute("workoutHistoryList", workoutHistoryService.findAllByUserAndWorkoutIdOrderByDateDesc(user, sessionParameters.getCurrentWorkout()));
+            model.addAttribute("workoutHistoryList", workoutHistoryService.findAllByUserAndWorkoutIdOrderByDateDescIdDesc(user, sessionParameters.getCurrentWorkout()));
             model.addAttribute("statistics", statistics);
         }
         return "main";

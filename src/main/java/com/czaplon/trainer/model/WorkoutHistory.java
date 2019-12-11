@@ -131,6 +131,36 @@ public class WorkoutHistory {
         this.bmi = bmi;
     }
 
+    public static String describeBMI(Float bmi) {
+        if (bmi<15) {
+            return  "Very severely underweight (BMI < 15)";
+        } else if (bmi<16) {
+            return "Severely underweight (15 < BMI < 16)";
+        } else if (bmi<18.5) {
+            return "Underweight (16 < BMI < 18.5)";
+        } else if (bmi<25) {
+            return "Normal (healthy weight) (18.5 < BMI < 25)";
+        } else if (bmi<30) {
+            return "Overweight (25 < BMI < 30)";
+        } else if (bmi<35) {
+            return "Obese Class I (Moderately obese) (30 < BMI < 35)";
+        } else if (bmi<40) {
+            return "Obese Class II (Severely obese) (35 < BMI < 40)";
+        } else if (bmi<45) {
+            return "Obese Class III (Very severely obese) (40 < BMI < 45)";
+        } else if (bmi<50) {
+            return "Obese Class IV (Morbidly obese) (45 < BMI < 50)";
+        } else if (bmi<60) {
+            return "Obese Class V (Super obese) (50 < BMI < 60)";
+        } else {
+            return "Obese Class VI (Hyper obese) (60 < BMI)";
+        }
+    }
+
+    public String describeBMI() {
+        return this.describeBMI(getBmi());
+    }
+
     @Override
     public String toString() {
         return "WorkoutHistory{" +

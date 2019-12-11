@@ -25,8 +25,8 @@ public class StatisticsService {
     public Map<String, String> generateStatistics(Long workoutId, User user) {
         Map<String,String> statistics = new HashMap<>();
         // duration
-        Optional<WorkoutHistory> firstWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateAsc(workoutId,user);
-        Optional<WorkoutHistory> lastWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateDesc(workoutId,user);
+        Optional<WorkoutHistory> firstWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateAscIdAsc(workoutId,user);
+        Optional<WorkoutHistory> lastWorkout = workoutHistoryService.findFirstByWorkoutIdAndUserOrderByDateDescIdDesc(workoutId,user);
         Integer workoutCount = workoutHistoryService.findAllByWorkoutIdAndUserAndWorkoutMade(workoutId,user,true).size();
         if (firstWorkout.isPresent()) {
             statistics.put("duration", String.valueOf(Duration.between(firstWorkout.get().getDate().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()));
@@ -34,6 +34,8 @@ public class StatisticsService {
         if (firstWorkout.isPresent() && lastWorkout.isPresent()) {
             statistics.put("weightLoss", String.valueOf(firstWorkout.get().getWeight()-lastWorkout.get().getWeight()));
             statistics.put("waistLoss", String.valueOf(firstWorkout.get().getWaist()-lastWorkout.get().getWaist()));
+            statistics.put("bmiIndex", String.valueOf(lastWorkout.get().getBmi()));
+            statistics.put("bmiDescription", "Your BMI is considered as: "+lastWorkout.get().describeBMI());
         }
         statistics.put("workoutCount",String.valueOf(workoutCount));
 

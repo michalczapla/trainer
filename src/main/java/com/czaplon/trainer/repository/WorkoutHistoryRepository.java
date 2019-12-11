@@ -13,13 +13,17 @@ import java.util.Optional;
 @Repository
 public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory,Long> {
     List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDesc(User user, Long workoutId);
+    List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId);
     List<WorkoutHistory> findAllByUserAndWorkoutId(User user, Long workoutId);
+    List<WorkoutHistory> findAllByUser(User user);
     Optional<WorkoutHistory> findByIdAndUser(Long id,User user);
 
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateDesc(Long workoutId, User user);
+    Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateDescIdDesc(Long workoutId, User user);
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateDesc(Long workoutId, User user);
 
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateAsc(Long workoutId, User user);
+    Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateAscIdAsc(Long workoutId, User user);
     Optional<WorkoutHistory> findFirstByWorkoutIdAndUserAndImageNotNullOrderByDateAsc(Long workoutId, User user);
 
     List<WorkoutHistory> findAllByWorkoutIdAndUserAndWorkoutMade(Long workoutId,User user,Boolean workoutMade);

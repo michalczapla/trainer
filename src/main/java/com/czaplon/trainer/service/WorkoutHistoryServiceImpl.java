@@ -3,6 +3,8 @@ package com.czaplon.trainer.service;
 import com.czaplon.trainer.model.User;
 import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 public class WorkoutHistoryServiceImpl implements WorkoutHistoryService{
 
     private WorkoutHistoryRepository workoutHistoryRepository;
+    private Logger logger = LoggerFactory.getLogger(WorkoutHistoryServiceImpl.class);
 
     @Autowired
     public WorkoutHistoryServiceImpl(WorkoutHistoryRepository workoutHistoryRepository) {
@@ -73,6 +76,34 @@ public class WorkoutHistoryServiceImpl implements WorkoutHistoryService{
     @Override
     public void deleteWorkoutHistoryByIdAndUser(Long workoutHistoryId, User user) {
         workoutHistoryRepository.deleteWorkoutHistoryByIdAndUser(workoutHistoryId,user);
+    }
+
+    @Override
+    public List<WorkoutHistory> findAllByUser(User user) {
+        return workoutHistoryRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId) {
+        return workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDescIdDesc(user, workoutId);
+    }
+
+    @Override
+    public Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateDescIdDesc(Long workoutId, User user) {
+        return workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateDescIdDesc(workoutId,user);
+    }
+
+    @Override
+    public Optional<WorkoutHistory> findFirstByWorkoutIdAndUserOrderByDateAscIdAsc(Long workoutId, User user) {
+        return workoutHistoryRepository.findFirstByWorkoutIdAndUserOrderByDateAscIdAsc(workoutId, user);
+    }
+
+    @Override
+    public void recalculateBMI(User user) {
+        List<WorkoutHistory> workouts = workoutHistoryRepository.findAllByUser(user);
+        workouts.forEach(item->item.setBmi(calculateBMI(user.getHeight(),item.getWeight())));
+        workoutHistoryRepository.saveAll(workouts);
+        logger.info("Recalculated BMI for each entry for user :" + user.getUsername()+", ID: "+user.getId());
     }
 
     private static Float calculateBMI(Float height, Float weight) {

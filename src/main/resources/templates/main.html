@@ -58,7 +58,7 @@
                     <th scope="row" class="font-weight-normal" th:text="${workoutHistory.getDate()}"></th>
                     <td class="font-weight-light" th:text="${workoutHistory.getWeight()}"></td>
                     <td class="font-weight-light" th:text="${workoutHistory.getWaist()}"></td>
-                    <td class="font-weight-light" th:text="${#numbers.formatDecimal(workoutHistory.getBmi(),0,2)}"></td>
+                    <td class="font-weight-light" th:text="${#numbers.formatDecimal(workoutHistory.getBmi(),0,2)}" th:title="${workoutHistory.describeBMI()}"></td>
                     <td>
                         <i th:if="${workoutHistory.workoutMade}" class="material-icons" title="Workout done">accessibility_new</i>
                         <i th:if="${workoutHistory.image!=null}" class="material-icons" title="Image uploaded">photo_camera</i>
@@ -147,6 +147,10 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Weight loss [kg]
                         <span class="border-left border-primary p-2" th:text="${#numbers.formatDecimal(statistics.get('weightLoss'), 0,2)}"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        BMI index
+                        <span class="border-left border-primary p-2" th:text="${#numbers.formatDecimal(statistics.get('bmiIndex'),0,2)}" th:title="${statistics.get('bmiDescription')}"></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Waist loss [cm]
