@@ -1,6 +1,5 @@
 package com.czaplon.trainer.model;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,6 +40,9 @@ public class WorkoutHistory {
 
     private Float bmi;
 
+    @Column(columnDefinition = "text")
+    private String comment;
+
     @NotNull(message = "Cannot be empty")
     private boolean workoutMade;
 
@@ -54,7 +56,7 @@ public class WorkoutHistory {
 
     private String image;
 
-    public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") LocalDate date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user) {
+    public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") LocalDate date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user, String comment) {
         this.workout = workout;
         this.date = date;
         this.weight = weight;
@@ -62,6 +64,7 @@ public class WorkoutHistory {
         this.workoutMade = workoutMade;
         this.user = user;
         this.bmi = 0.0f;
+        this.comment = comment;
     }
 
     public WorkoutHistory() {
@@ -129,6 +132,14 @@ public class WorkoutHistory {
 
     public void setBmi(Float bmi) {
         this.bmi = bmi;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comments) {
+        this.comment = comments;
     }
 
     public static String describeBMI(Float bmi) {

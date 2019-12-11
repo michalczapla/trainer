@@ -62,6 +62,7 @@
                     <td>
                         <i th:if="${workoutHistory.workoutMade}" class="material-icons" title="Workout done">accessibility_new</i>
                         <i th:if="${workoutHistory.image!=null}" class="material-icons" title="Image uploaded">photo_camera</i>
+                        <i th:if="${workoutHistory.comment!=null && workoutHistory.comment!=''}" class="material-icons" title="Commented">comment</i>
                     </td>
                     <td class="d-flex justify-content-center align-content-between">
                         <a th:href="@{/workouthistory/edit/(h=${workoutHistory.getId()})}" class="btn btn-outline-secondary btn-sm d-flex justify-content-center align-content-between mr-1"><i class="material-icons md-18">build</i></a>
@@ -101,24 +102,12 @@
                                             <input type="checkbox" checked autocomplete="off" th:field="*{workoutMade}" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"><i class="material-icons" title="Workout done">accessibility_new</i>
                                         </label>
                                     </div>
-<!--                                    <input class="form-check-input" th:classappend="${#fields.hasErrors('workoutMade')} ? 'is-invalid' : ''"-->
-<!--                                           type="checkbox" th:field="*{workoutMade}" id="checkbox-workout-made">-->
-<!--                                    <label class="form-check-label" for="checkbox-workout-made"><i class="material-icons" title="Workout done">accessibility_new</i></label>-->
                                     <div class="invalid-feedback" th:errors="*{workoutMade}" th:if="${#fields.hasErrors('workoutMade')}">Errors</div>
                                 </div>
                             </div>
                             <div>
                                 <div class="form-group">
-    <!--                                <label class="btn btn-default btn-file" th:classappend="${imageError} ? 'is-invalid' : ''">-->
-    <!--                                    Browse <input type="file" style="display: none;" name="imageFile">-->
-    <!--                                    <div class="invalid-feedback" th:text="${imageError}" th:if="${imageError}">Errors</div>-->
-    <!--                                </label>-->
-
-<!--                                    <input class="form-control-file" th:classappend="${imageError} ? 'is-invalid' : ''"-->
-<!--                                           type="file" id="checkbox-image" name="imageFile">-->
                                     <span class="btn btn-primary btn-sm d-flex justify-content-center align-content-between btn-file"><i class="material-icons">add_a_photo</i><input type="file" name="imageFile"></span>
-
-
                                 </div>
                                 <div>
                                      <div th:text="${imageError}" th:if="${imageError}" class="invalid-feedback-2">Errors</div>
@@ -133,7 +122,15 @@
                             </div>
                         </td>
                     </tr>
-
+                    <tr>
+                        <td colspan="5">
+                            <div class="form-group">
+                                <input class="form-control" th:classappend="${#fields.hasErrors('comment')} ? 'is-invalid' : ''"
+                                       type="text" th:field="*{comment}" placeholder="Comments">
+                                <div class="invalid-feedback" th:errors="*{comment}" th:if="${#fields.hasErrors('comment')}">Errors</div>
+                            </div>
+                        </td>
+                    </tr>
             </form>
             </table>
             <div class="jumbotron" th:if="${workoutHistoryList.size()>1}">
