@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,12 +88,23 @@ public class FileSystemStorageService implements StorageService {
                                     + filename);
                 }
                 try (InputStream inputStream = file.getInputStream()) {
+                    // rozwiazanie z thumbnailsem
+//                    BufferedImage image = Thumbnails.of(inputStream).scale(1).asBufferedImage();
+//                    File fileToSave = new File(String.valueOf(this.rootLocation.resolve(hashedFilename)));
+//                    ImageIO.write(image,FilenameUtils.getExtension(filename),fileToSave);
+                    //
+                    File fileToSave = new File(String.valueOf(this.rootLocation.resolve(hashedFilename)));
+                    BufferedImage image = ImageAutoRotator.rotateImage(file);
+
+                  ImageIO.write(image,FilenameUtils.getExtension(filename),fileToSave);
+
+//                    Files.copy(fileToSave, this.rootLocation.resolve(hashedFilename),
+//                            StandardCopyOption.REPLACE_EXISTING);
                     logger.info("File was successfully uploaded. Filename "+ hashedFilename);
-                    Files.copy(inputStream, this.rootLocation.resolve(hashedFilename),
-                            StandardCopyOption.REPLACE_EXISTING);
+                    
                 }
-            } catch (IOException e) {
-                logger.warn("Failed to store file " + filename);
+            } catch (IOException | ImageAutoRotatorException e) {
+                logger.warn("Failed to store file " + filename + " exception: "+e.getMessage());
                 throw new StorageException("Failed to store file " + filename, e);
             }
         } else {

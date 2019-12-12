@@ -35,3 +35,4 @@ build/
 
 ### uploaded ###
 **/upload-dir/**
+/trainer/**
