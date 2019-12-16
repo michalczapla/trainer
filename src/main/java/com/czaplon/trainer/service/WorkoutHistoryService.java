@@ -5,6 +5,7 @@ import com.czaplon.trainer.model.WorkoutHistory;
 import com.czaplon.trainer.repository.WorkoutHistoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public interface WorkoutHistoryService {
     void recalculateBMI(User user);
 
     List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDesc(User user, Long workoutId);
-    List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId);
+    LinkedList<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId);
     List<WorkoutHistory> findAllByUserAndWorkoutId(User user, Long workoutId);
     List<WorkoutHistory> findAllByUser(User user);
     Optional<WorkoutHistory> findByIdAndUser(Long id, User user);

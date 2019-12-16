@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class WorkoutHistoryServiceImpl implements WorkoutHistoryService{
@@ -84,8 +85,20 @@ public class WorkoutHistoryServiceImpl implements WorkoutHistoryService{
     }
 
     @Override
-    public List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId) {
-        return workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDescIdDesc(user, workoutId);
+    public LinkedList<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId) {
+        LinkedList<WorkoutHistory> list = workoutHistoryRepository.findAllByUserAndWorkoutIdOrderByDateDescIdDesc(user, workoutId);
+        ListIterator<WorkoutHistory> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            WorkoutHistory current = iterator.next();
+            WorkoutHistory nextWorkout = (iterator.hasNext()) ? iterator.next() : null;
+
+            if (current!=null && nextWorkout!=null) {
+                iterator.previous();
+                current.setDaysSinceLastEntry(DAYS.between(nextWorkout.getDate(), current.getDate()));
+            }
+        }
+
+        return list;
     }
 
     @Override

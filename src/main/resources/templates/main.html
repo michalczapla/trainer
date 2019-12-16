@@ -55,7 +55,7 @@
                 </tr>
                 </thead>
                 <tr th:each="workoutHistory: ${workoutHistoryList}">
-                    <th scope="row" class="font-weight-normal" th:text="${workoutHistory.getDate()}"></th>
+                    <th scope="row" class="font-weight-normal"><span th:text="${workoutHistory.getDate()}" /><span class="badge badge-info ml-1" th:if="${workoutHistory.getDaysSinceLastEntry()!=null && workoutHistory.getDaysSinceLastEntry()>0}" th:text="${'+'+workoutHistory.getDaysSinceLastEntry()}" /></th>
                     <td class="font-weight-light" th:text="${workoutHistory.getWeight()}"></td>
                     <td class="font-weight-light" th:text="${workoutHistory.getWaist()}"></td>
                     <td class="font-weight-light" th:text="${#numbers.formatDecimal(workoutHistory.getBmi(),0,2)}" th:title="${workoutHistory.describeBMI()}"></td>

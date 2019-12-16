@@ -7,13 +7,14 @@ import org.hibernate.jdbc.Work;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory,Long> {
     List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDesc(User user, Long workoutId);
-    List<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId);
+    LinkedList<WorkoutHistory> findAllByUserAndWorkoutIdOrderByDateDescIdDesc(User user, Long workoutId);
     List<WorkoutHistory> findAllByUserAndWorkoutId(User user, Long workoutId);
     List<WorkoutHistory> findAllByUser(User user);
     Optional<WorkoutHistory> findByIdAndUser(Long id,User user);

@@ -36,3 +36,4 @@ build/
 ### uploaded ###
 **/upload-dir/**
 /trainer/**
+/database_bckup/**

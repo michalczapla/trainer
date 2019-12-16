@@ -46,6 +46,11 @@ public class WorkoutHistory {
     @NotNull(message = "Cannot be empty")
     private boolean workoutMade;
 
+    @Transient
+    private Long daysSinceLastEntry;
+
+    private String image;
+
     public String getImage() {
         return image;
     }
@@ -54,7 +59,7 @@ public class WorkoutHistory {
         this.image = image;
     }
 
-    private String image;
+
 
     public WorkoutHistory(@NotNull(message = "Cannot be empty") Workout workout, @NotNull(message = "Cannot be empty") LocalDate date, @NotNull(message = "Cannot be empty") @Positive(message = "Weight needs to be positive") Float weight, @NotNull(message = "Cannot be empty") @Positive(message = "Waist needs to be positive") Float waist, @NotNull(message = "Cannot be empty") boolean workoutMade, User user, String comment) {
         this.workout = workout;
@@ -140,6 +145,14 @@ public class WorkoutHistory {
 
     public void setComment(String comments) {
         this.comment = comments;
+    }
+
+    public Long getDaysSinceLastEntry() {
+        return daysSinceLastEntry;
+    }
+
+    public void setDaysSinceLastEntry(Long daysSinceLastEntry) {
+        this.daysSinceLastEntry = daysSinceLastEntry;
     }
 
     public static String describeBMI(Float bmi) {
